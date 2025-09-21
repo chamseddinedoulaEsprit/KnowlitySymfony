@@ -1,0 +1,118 @@
+{% extends 'base2.html.twig' %}
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            background-color: #131722; /* Couleur du background de ta template */
+            color: white;
+        }
+        .container {
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #1E293B;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .form-control {
+            background-color: #0F172A;
+            color: white;
+            border: 1px solid #334155;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #3B82F6;
+        }
+        .profile-button {
+            background: #3B82F6;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+        }
+        .profile-button:hover {
+            background: #2563EB;
+        }
+        .back a {
+            color: #3B82F6;
+            text-decoration: none;
+        }
+        .back a:hover {
+            color: #2563EB;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4 border-end text-center p-4">
+                <img class="rounded-circle1 mt-5" src="{{ asset('uploads/' ~ app.session.get('image')) }}" alt="Profile Image" width="150" height="150">
+                <h5 class="mt-1">{{ app.session.get('user_nom') }} {{ app.session.get('user_prenom') }}</h5>
+                <p class="text-muted">{{ app.session.get('email') }}</p>
+                <p>{{ app.session.get('localisation') }}</p>
+            </div>
+            <div class="col-md-8">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="back">
+                            <a href="/user/back">&larr; Retour à l'accueil</a>
+                        </div>
+                        <h6>Nouveau Etudiant &nbsp;&nbsp;&nbsp;</h6>
+                        
+                    </div>
+                    {{ form_start(form) }}
+                    <div class="row">
+                        <div class="col-md-6">{{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                            {{ form_errors(form.nom, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                        <div class="col-md-6">{{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                          {{ form_errors(form.prenom, {'attr': {'class': 'form-control border-white'}}) }}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">{{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                          {{ form_errors(form.email, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                        <div class="col-md-6">{{ form_widget(form.date_naissance, {'attr': {'class': 'form-control', 'placeholder': 'Date de Naissance'}}) }}
+                          {{ form_errors(form.date_naissance, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">{{ form_widget(form.image, {'attr': {'class': 'form-control', 'placeholder': 'Image'}}) }}
+                          {{ form_errors(form.image, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                        <div class="col-md-6">{{ form_widget(form.localisation, {'attr': {'class': 'form-control', 'placeholder': 'Localisation'}}) }}
+                          {{ form_errors(form.localisation, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">{{ form_widget(form.num_telephone, {'attr': {'class': 'form-control', 'placeholder': 'Numéro telephone'}})  }}
+                          {{ form_errors(form.num_telephone, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                        <div class="col-md-6">{{ form_widget(form.genre, {'attr': {'class': 'form-control', 'placeholder': 'Genre'}}) }}
+                          {{ form_errors(form.genre, {'attr': {'class': 'form-control border-white'}}) }}</div>
+
+                    </div>
+                                        <div class="row mt-3">
+                        <div class="col-md-6">{{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
+                          {{ form_errors(form.password, {'attr': {'class': 'form-control border-white'}}) }}</div>
+                        <div class="col-md-6">{{ form_widget(form.confirm_password, {'attr': {'class': 'form-control', 'placeholder': 'ConfirmPassword'}}) }}
+                          {{ form_errors(form.confirm_password  , {'attr': {'class': 'form-control border-white'}}) }}</div>
+                        
+                    </div>
+                              <div class="row mt-3">
+                      
+                 
+                        
+                    </div>
+                    <div class="mt-4 text-end">
+                        {{ form_widget(form.save, {'attr': {'class': 'btn profile-button'}}) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
+{% endblock %}

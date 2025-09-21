@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des chapitres{% endblock %}
+{% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('assets/css/chapitre1.css') }}">
+
+{% endblock %}
+{% block body %}
+    <h1>liste des chapitres</h1>
+
+    <div class="demandes-container">
+        {% for chapitre in chapitres %}
+            <div class="demande-card">
+                <div class="demande-info">
+                    <p> </p>
+                    <p><strong>Id:</strong> {{ chapitre.id }}</p>
+                    <p><strong>Title:</strong> {{ chapitre.title }}</p>
+                    <p><strong>ChapOrder:</strong> {{ chapitre.chapOrder }}</p>
+                    <p><strong>actions:</strong></p>
+
+                </div>
+                <div class="demande-actions">
+                
+                    <a href="{{ path('app_chapitre_show', {'id': chapitre.id}) }}" class="btn btn-propose">Read</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="no-records">
+                Aucune demande trouvée.
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+

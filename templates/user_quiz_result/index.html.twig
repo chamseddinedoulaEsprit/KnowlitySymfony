@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserQuizResult index{% endblock %}
+
+{% block body %}
+    <h1>UserQuizResult index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Score</th>
+                <th>SoumisLe</th>
+                <th>Feedback</th>
+                <th>User</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user_quiz_result in user_quiz_results %}
+            <tr>
+                <td>{{ user_quiz_result.id }}</td>
+                <td>{{ user_quiz_result.score }}</td>
+                <td>{{ user_quiz_result.soumisLe ? user_quiz_result.soumisLe|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user_quiz_result.feedback }}</td>
+                <td>{{ user_quiz_result.user }}</td>
+                <td>
+                    <a href="{{ path('app_user_quiz_result_show', {'id': user_quiz_result.id}) }}">show</a>
+                    <a href="{{ path('app_user_quiz_result_edit', {'id': user_quiz_result.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_quiz_result_new') }}">Create new</a>
+{% endblock %}

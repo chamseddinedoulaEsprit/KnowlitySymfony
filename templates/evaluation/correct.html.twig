@@ -1,0 +1,241 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Correction de l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .correction-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .question-section {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .question-content {
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        .response-section {
+            background: white;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .response-text {
+            font-family: monospace;
+            white-space: pre-wrap;
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-warning {
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+            color: #c2410c;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        @media (max-width: 768px) {
+            .correction-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .card-header, .card-body {
+                padding: 1rem;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="correction-container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">{{ evaluation.title }}</h2>
+        </div>
+        <div class="card-body">
+            {% for questionResponse in questionResponses %}
+                <div class="question-section">
+                    <h3 class="question-title">Question {{ loop.index }}</h3>
+                    <div class="question-content">{{ questionResponse.question.enonce }}</div>
+                    <p><strong>Points possibles :</strong> {{ questionResponse.question.point }}</p>
+
+                    <div class="response-section">
+                        <h4>Réponse de l'étudiant</h4>
+                        {% if questionResponse.reponse %}
+                            {% if questionResponse.reponse.plagiatSuspect %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Attention :</strong> Cette réponse contient du contenu inapproprié
+                                    <p class="mb-0"><small>Détecté le : {{ questionResponse.reponse.submitTime|date('d/m/Y H:i:s') }}</small></p>
+                                </div>
+                            {% endif %}
+                            <div class="response-text">{{ questionResponse.reponse.text }}</div>
+                        {% else %}
+                            <p class="text-muted">Aucune réponse fournie</p>
+                        {% endif %}
+                    </div>
+
+                    <form method="post" action="{{ path('evaluation_save_correction', {'id': evaluation.id}) }}" class="mt-4">
+                        <div class="form-group">
+                            <label for="note_{{ questionResponse.question.id }}" class="form-label">Note</label>
+                            <input type="number" 
+                                   id="note_{{ questionResponse.question.id }}" 
+                                   name="notes[{{ questionResponse.question.id }}]" 
+                                   class="form-control" 
+                                   min="0" 
+                                   max="{{ questionResponse.question.point }}"
+                                   value="{{ questionResponse.reponse ? questionResponse.reponse.note : '' }}"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="commentaire_{{ questionResponse.question.id }}" class="form-label">Commentaire</label>
+                            <textarea id="commentaire_{{ questionResponse.question.id }}" 
+                                      name="commentaires[{{ questionResponse.question.id }}]" 
+                                      class="form-control" 
+                                      rows="3">{{ questionResponse.reponse ? questionResponse.reponse.commentaire : '' }}</textarea>
+                        </div>
+                    </form>
+                </div>
+            {% endfor %}
+
+            <div class="btn-container">
+                <a href="{{ path('app_evaluation_student_list', {'evaluationId': evaluation.id}) }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Enregistrer la correction
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

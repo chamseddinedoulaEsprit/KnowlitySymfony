@@ -1,0 +1,40 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Détails de l'Enseignant{% endblock %}
+
+{% block body %}
+    <h1>Détails de l'Enseignant</h1>
+
+
+    <ul>
+        <li><strong>Nom :</strong> {{ us.nom }}</li>
+        <li><strong>Prénom :</strong> {{ us.prenom }}</li>
+        <li><strong>Date de naissance :</strong> {{ us.dateNaissance|date('d/m/Y') }}</li>
+        <li><strong>Email :</strong> {{ us.email }}</li>
+        <li><strong>Numéro de téléphone :</strong> {{ us.numTelephone }}</li>
+        <li><strong>Genre :</strong> {{ us.genre }}</li>
+        <li><strong>Localisation :</strong> {{ us.localisation }}</li>
+        <li><strong>Créé le :</strong> {{ us.createdAt|date('d/m/Y H:i') }}</li>
+       
+        <li><strong>Spécialité :</strong> {{ us.specialite  }}</li>
+     
+        <li><strong>Rôle :</strong> {{ us.roles }}</li>
+        <li><strong>Statut :</strong> 
+            {% if us.banned == 1 %}
+                Banni
+            {% elseif us.deleted   == 1%}
+                Supprimé
+            {% else %}
+                Actif
+            {% endif %}
+        </li>
+        <li><strong>Image :</strong> 
+           
+                <img src="{{ asset('uploads/' ~ us.image) }}" alt="Photo de {{ us.nom }}" width="150">
+        
+        </li>
+        <a href="/user/back/{{app.session.get('id')}}/editenseignant" class="btn btn-primary">Modifer</a>
+    </ul>
+
+   
+{% endblock %}

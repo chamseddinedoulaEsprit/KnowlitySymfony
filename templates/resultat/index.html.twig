@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau des Résultats{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="fw-bold">🏆 Tableau des Résultats</h2>
+            <p class="mb-0">Suivez vos performances et progressez chaque jour ! 🚀</p>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                        <th>Feedback</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for resultat in resultats %}
+                    <tr>
+                        <td>{{ resultat.id }}</td>
+                        <td class="fw-bold {% if resultat.score >= 80 %}text-success{% elseif resultat.score >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ resultat.score }} / 100
+                        </td>
+                        <td>{{ resultat.submittedAt ? resultat.submittedAt|date('d/m/Y H:i:s') : 'Non disponible' }}</td>
+                        <td class="fst-italic">"{{ resultat.feedback }}"</td>
+                        <td>
+                            <a href="{{ path('app_resultat_show', {'id': resultat.id}) }}" class="btn btn-sm btn-info text-white">👁 Voir</a>
+                            <a href="{{ path('app_resultat_edit', {'id': resultat.id}) }}" class="btn btn-sm btn-warning">✏ Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            🤷‍♂️ Aucun résultat trouvé. Lancez-vous et testez vos compétences !
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('app_resultat_new') }}" class="btn btn-success">➕ Ajouter un nouveau Résultat</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

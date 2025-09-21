@@ -1,0 +1,38 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}QUIZQUESTION{% endblock %}
+
+{% block body %}
+    <h1>QUIZQUESTION</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.id }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.type }}</td>
+            </tr>
+            <tr>
+                <th>Points</th>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.points }}</td>
+            </tr>
+            <tr>
+                <th>Texte</th>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.texte }}</td>
+            </tr>
+            <tr>
+                <th>Ordre</th>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.ordre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_q_u_i_z_q_u_e_s_t_i_o_n_index') }}">back to list</a>
+
+    <a href="{{ path('app_q_u_i_z_q_u_e_s_t_i_o_n_edit', {'id': q_u_i_z_q_u_e_s_t_i_o_n.id}) }}">edit</a>
+
+    {{ include('quizquestion/_delete_form.html.twig') }}
+{% endblock %}

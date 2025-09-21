@@ -1,0 +1,41 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}QUIZQUESTION index{% endblock %}
+
+{% block body %}
+    <h1>QUIZQUESTION index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Points</th>
+                <th>Texte</th>
+                <th>Ordre</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for q_u_i_z_q_u_e_s_t_i_o_n in q_u_i_z_q_u_e_s_t_i_o_ns %}
+            <tr>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.id }}</td>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.type }}</td>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.points }}</td>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.texte }}</td>
+                <td>{{ q_u_i_z_q_u_e_s_t_i_o_n.ordre }}</td>
+                <td>
+                    <a href="{{ path('app_q_u_i_z_q_u_e_s_t_i_o_n_show', {'id': q_u_i_z_q_u_e_s_t_i_o_n.id}) }}">show</a>
+                    <a href="{{ path('app_q_u_i_z_q_u_e_s_t_i_o_n_edit', {'id': q_u_i_z_q_u_e_s_t_i_o_n.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+   <a href="{{ path('app_q_u_i_z_q_u_e_s_t_i_o_n_new' , {'id': 1})}}">Create new</a>
+{% endblock %}

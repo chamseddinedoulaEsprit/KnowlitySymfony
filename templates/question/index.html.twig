@@ -1,0 +1,204 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Questions de l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .evaluation-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #007bff;
+        }
+        .evaluation-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .evaluation-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .evaluation-description {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        .score-info {
+            font-size: 1.1rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #495057;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        .question-number {
+            font-weight: 600;
+            color: #495057;
+            text-align: center;
+            width: 80px;
+        }
+        .points-cell {
+            text-align: center;
+            width: 100px;
+        }
+        .points-badge {
+            background: #17a2b8;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .question-title {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .question-preview {
+            color: #6c757d;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .actions-cell {
+            text-align: right;
+            width: 220px;
+        }
+        .btn-group {
+            gap: 0.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .btn-voir {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .btn-voir:hover {
+            background-color: #138496;
+            color: white;
+        }
+        .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <h1 class="page-title">
+                        <i class="fas fa-list"></i> Questions de l'évaluation
+                    </h1>
+                </div>
+                <div>
+                    <a href="{{ path('app_question_new', {'evaluationId': evaluation.id}) }}" class="btn btn-success">
+                        <i class="fas fa-plus-circle"></i> Nouvelle Question
+                    </a>
+                    <a href="{{ path('app_evaluation_showenseignant', {'id': evaluation.id}) }}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-arrow-left"></i> Retour à l'évaluation
+                    </a>
+                </div>
+            </div>
+
+            <div class="evaluation-info">
+                <div class="evaluation-header">
+                    <div class="evaluation-title">
+                        <i class="fas fa-book"></i> {{ evaluation.title }}
+                    </div>
+                    <div class="evaluation-description">
+                        {{ evaluation.description }}
+                    </div>
+                    <div class="score-info">
+                        <i class="fas fa-star text-warning"></i>
+                        Score maximum : {{ evaluation.maxScore }} points
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="question-number">N°</th>
+                            <th class="points-cell">Points</th>
+                            <th>Titre</th>
+                            <th>Énoncé</th>
+                            <th class="actions-cell">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for question in questions|sort((a, b) => a.ordreQuestion <=> b.ordreQuestion) %}
+                        <tr>
+                            <td class="question-number">{{ question.ordreQuestion }}</td>
+                            <td class="points-cell">
+                                <span class="points-badge">{{ question.point }} pts</span>
+                            </td>
+                            <td class="question-title">{{ question.title }}</td>
+                            <td>
+                                <div class="question-preview" title="{{ question.enonce }}">
+                                    {{ question.enonce }}
+                                </div>
+                            </td>
+                            <td class="actions-cell">
+                                <div class="btn-group">
+                                    <a href="{{ path('app_question_show', {'id': question.id}) }}" class="btn btn-voir btn-sm">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                    <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <form method="post" action="{{ path('app_question_delete', {'id': question.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                                        <button class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette question ?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-message">
+                                <i class="fas fa-info-circle"></i> Aucune question n'a encore été ajoutée à cette évaluation.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

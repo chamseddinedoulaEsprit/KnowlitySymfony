@@ -1,0 +1,59 @@
+.container1 {
+    position: relative;
+max-width: 1000px;
+margin-top: 80px;
+right: -137px;}
+
+.table th, .table td {
+ vertical-align: middle;
+}
+
+.btn {
+ border-radius: 8px;
+ padding: 10px 25px;
+ font-size: 16px;
+ margin-right: 10px;
+ display: inline-flex;
+ align-items: center;
+ transition: all 0.3s ease;
+}
+
+.btn-primary {
+ background-color: #007bff;
+ color: white;
+ border: none;
+}
+
+.btn-primary:hover {
+ background-color: #0056b3;
+ transform: translateY(-2px);
+}
+
+.btn-secondary {
+ background-color: #6c757d;
+ color: white;
+ border: none;
+}
+
+.btn-secondary:hover {
+ background-color: #5a6268;
+ transform: translateY(-2px);
+}
+
+.motivational-text {
+ font-size: 1.4rem;
+ color: #28a745;
+ font-weight: bold;
+ text-align: center;
+ margin-top: 30px;
+}
+
+.icon-btn {
+ margin-right: 8px;
+}
+
+.actions {
+ display: flex;
+ justify-content: space-between;
+ gap: 10px;
+}

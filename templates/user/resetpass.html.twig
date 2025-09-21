@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">Modifier votre mot de passe</h2>
+    {% for message in app.flashes('error') %}
+     <div style="color: red;">{{ message }}</div>
+     {% endfor %}
+                <form method="post" action="{{ path('app_resetuserpassword') }}">
+                    <div class="mb-3">
+                        <label for="oldpassword" class="form-label">Ancien mot de passe</label>
+                        <input type="password" name="oldpassword" id="oldpassword" class="form-control" autocomplete="current-password" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newpassword" class="form-label">Nouveau mot de passe</label>
+                        <input type="password" name="newpassword" id="newpassword" class="form-control" autocomplete="new-password" required>
+                    </div>
+                        <div class="mb-3">
+                        <label for="confirmpassword" class="form-label">Confirmer nouveau mot de passe</label>
+                        <input type="password" name="confirmpassword" id="confirmpassword" class="form-control" autocomplete="new-password" required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Modifier le mot de passe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}

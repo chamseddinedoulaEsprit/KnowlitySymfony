@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Évaluations{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .status-badge {
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .status-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-corrected {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .evaluation-table th {
+            background-color: #f8f9fa;
+        }
+        .evaluation-table td {
+            vertical-align: middle;
+        }
+        .notification {
+            margin-left: 8px;
+            font-size: 0.8em;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background-color: #e9ecef;
+            color: #495057;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Mes Évaluations</h1>
+
+        <div class="table-responsive">
+            <table class="table table-bordered evaluation-table">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Score Maximum</th>
+                        <th>Date Limite</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in evaluations %}
+                        <tr>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.maxScore }}</td>
+                            <td>{{ item.deadline ? item.deadline|date('d/m/Y H:i') : '' }}</td>
+                            <td>
+                                {% if not item.hasResponded %}
+                                    <span class="status-badge status-pending">Non soumis</span>
+                                {% elseif item.isCorrected %}
+                                    <span class="status-badge status-corrected">Corrigé</span>
+                                {% else %}
+                                    <span class="status-badge status-completed">En attente de correction</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if (not item.hasResponded) and item.deadline > date() %}
+                                    <a href="{{ path('etudiant_evaluation_answer', {'id': item.id}) }}" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="fas fa-pen"></i> Répondre
+                                    </a>
+                                {% elseif item.hasResponded %}
+                                    <a href="{{ path('app_evaluation_showetudiant', {'id': item.id}) }}" 
+                                       class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Voir résultat
+                                    </a>
+                                    {% if item.isCorrected %}
+                                        <span class="notification">
+                                            <i class="fas fa-check-circle text-success"></i> Note disponible
+                                        </span>
+                                    {% else %}
+                                        <span class="notification">
+                                            <i class="fas fa-clock text-warning"></i> En cours de correction
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">Délai expiré</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if app.session.flashBag.has('success') %}
+        <div class="alert alert-success">
+            {{ app.session.flashBag.get('success')[0] }}
+        </div>
+    {% endif %}
+{% endblock %}

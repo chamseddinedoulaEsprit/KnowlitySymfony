@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz Results{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg mb-5">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0"><i class="fas fa-poll me-2"></i>Quiz Submission Summary</h1>
+        </div>
+        
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading"><i class="fas fa-calendar-alt me-2"></i>Submission Date</h5>
+                        <p class="mb-0">{{ user_quiz_selection.selectionDate|date('F j, Y \\a\\t g:i A') }}</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="alert alert-success">
+                        <h5 class="alert-heading"><i class="fas fa-star me-2"></i>Score</h5>
+                        <div class="d-flex align-items-center">
+                            <span class="score-percentage">{{ user_quiz_selection.score|default('N/A') }}%</span>
+                            {% if user_quiz_selection.score is not null %}
+                                <span class="score-emoji ms-2">
+                                    {% set score = user_quiz_selection.score %}
+                                    {% if score < 25 %}😢
+                                    {% elseif score < 50 %}😟
+                                    {% elseif score < 70 %}🙂
+                                    {% else %}😃
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Correct Answers</h5>
+                        <p class="mb-0">{{ user_quiz_selection.correctResponses|default('N/A') }} / {{ user_quiz_selection.userQuizResults|length }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mb-4"><i class="fas fa-list-ol me-2"></i>Detailed Responses</h3>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in user_quiz_selection.userQuizResults %}
+                            <tr>
+                                <td>{{ result.quizQuestion.texte }}</td>
+                                <td>{{ result.response }}</td>
+                                <td>
+                                    {% if result.quizQuestion.type == 'single_choice' %}
+                                        {% for answer in result.quizQuestion.reponses %}
+                                            {% if answer.estCorrecte %}
+                                                <span class="badge bg-success">{{ answer.texte }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elseif result.quizQuestion.type == 'multiple_choice' %}
+                                        {% set correctAnswers = [] %}
+                                        {% for answer in result.quizQuestion.getReponses() %}
+                                            {% if answer.estCorrecte %}
+                                                {% set correctAnswers = correctAnswers|merge([answer.texte]) %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% for ans in correctAnswers %}
+                                            <span class="badge bg-success me-1">{{ ans }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if result.quizQuestion.type == 'single_choice' %}
+                                        {% set isCorrect = false %}
+                                        {% for answer in result.quizQuestion.reponses %}
+                                            {% if answer.estCorrecte and answer.texte == result.reponse %}
+                                                {% set isCorrect = true %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if isCorrect %}
+                                            <span class="badge bg-success"><i class="fas fa-check"></i> Correct</span>
+                                        {% else %}
+                                            <span class="badge bg-danger"><i class="fas fa-times"></i> Incorrect</span>
+                                        {% endif %}
+                                    {% elseif result.quizQuestion.type == 'multiple_choice' %}
+                                        {% set selectedAnswers = result.getResponse()|split(', ') %}
+                                        {% set correctAnswers = [] %}
+                                        {% for answer in result.quizQuestion.reponses %}
+                                            {% if answer.estCorrecte %}
+                                                {% set correctAnswers = correctAnswers|merge([answer.texte]) %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if selectedAnswers|sort == correctAnswers|sort %}
+                                            <span class="badge bg-success"><i class="fas fa-check"></i> Correct</span>
+                                        {% else %}
+                                            <span class="badge bg-danger"><i class="fas fa-times"></i> Incorrect</span>
+                                        {% endif %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No responses recorded</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_user_quiz_selection_index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+
+                <!-- Add the PDF download button -->
+                <a href="{{ path('generate_pdf', {'id': user_quiz_selection.id}) }}" 
+   class="btn btn-outline-danger">
+    <i class="fas fa-file-pdf me-2"></i>Download PDF
+</a>
+
+
+                {% if is_granted('ROLE_TEACHER') %}
+                    <div class="btn-group">
+                        <a href="{{ path('app_user_quiz_selection_edit', {'id': user_quiz_selection.id}) }}" 
+                           class="btn btn-warning">
+                            <i class="fas fa-edit me-2"></i>Edit
+                        </a>
+                        {{ include('user_quiz_selection/_delete_form.html.twig') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .card {
+        border-radius: 15px;
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.75em;
+    }
+    .alert {
+        border-radius: 10px;
+    }
+    /* Emoji styling */
+    .score-emoji {
+        font-size: 1.8rem;
+        line-height: 1;
+        margin-left: 0.8rem;
+        vertical-align: middle;
+    }
+    .score-percentage {
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+    .d-flex.align-items-center {
+        min-height: 40px;
+    }
+</style>
+{% endblock %}

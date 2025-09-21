@@ -1,0 +1,183 @@
+<section>
+   <h1>Event Details</h1>
+   {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
+
+   <table class="form-table">
+      <tr>
+         <td><label for="form_title">Event Title</label></td>
+         <td>
+            {{ form_widget(form.title, {'attr': {'placeholder': 'Enter event title', 'id': 'form_title'}}) }}
+            <div class="form-errors">{{ form_errors(form.title) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_description">Description</label></td>
+         <td>
+            {{ form_widget(form.description, {'attr': {'placeholder': 'Enter event description', 'rows': 3, 'id': 'form_description'}}) }}
+            <div class="form-errors">{{ form_errors(form.description) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_start_date">Start Date</label></td>
+         <td>
+            {{ form_widget(form.start_date, {'attr': {'placeholder': 'Select start date', 'id': 'form_start_date'}}) }}
+            <div class="form-errors">{{ form_errors(form.start_date) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_end_date">End Date</label></td>
+         <td>
+            {{ form_widget(form.end_date, {'attr': {'placeholder': 'Select end date', 'id': 'form_end_date'}}) }}
+            <div class="form-errors">{{ form_errors(form.end_date) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_type">Event Type</label></td>
+         <td>
+            {{ form_widget(form.type, {'attr': {'id': 'form_type'}}) }}
+            <div class="form-errors">{{ form_errors(form.type) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_max_participants">Max Participants</label></td>
+         <td>
+            {{ form_widget(form.max_participants, {'attr': {'placeholder': 'Enter max participants', 'id': 'form_max_participants'}}) }}
+            <div class="form-errors">{{ form_errors(form.max_participants) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_location">Location</label></td>
+         <td>
+            {{ form_widget(form.location, {'attr': {'placeholder': 'Enter event location', 'id': 'form_location'}}) }}
+            <div class="form-errors">{{ form_errors(form.location) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_category">Category</label></td>
+         <td>
+            {{ form_widget(form.category , {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+            <div class="form-errors">{{ form_errors(form.category) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="eventImage">Choose Image</label></td>
+         <td>
+            <div class="file-upload">
+               {{ form_widget(form.imageFile, {'attr': {'id': 'eventImage'}}) }}
+               <label for="eventImage"></label>
+            </div>
+            <div class="form-errors">{{ form_errors(form.imageFile) }}</div>
+         </td>
+         
+      </tr>
+
+      <tr>
+         <td colspan="2">
+            <div class="form-actions">
+               <input type="submit" value="Save" class="submit-btn">
+               <button type="reset" class="reset-btn">Reset</button>
+            </div>
+         </td>
+      </tr>
+   </table>
+
+   {{ form_end(form) }}
+</section>
+
+<style>
+   section {
+      width: 80%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f9;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   }
+
+   h1 {
+      text-align: center;
+      color: #333;
+   }
+
+   .form-table {
+      width: 100%;
+      border-collapse: collapse;
+   }
+
+   .form-table td {
+      padding: 10px;
+      vertical-align: top;
+   }
+
+   .form-table label {
+      font-weight: bold;
+      display: block;
+   }
+
+   .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+   }
+
+   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #007bff;
+      outline: none;
+   }
+
+   .form-errors {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+   }
+
+   .file-upload {
+      display: flex;
+      align-items: center;
+   }
+
+   .file-upload input[type="file"] {
+      margin-right: 10px;
+   }
+
+   .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+   }
+
+   .submit-btn, .reset-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+   }
+
+   .submit-btn {
+      background-color: #28a745;
+      color: white;
+   }
+
+   .reset-btn {
+      background-color: #dc3545;
+      color: white;
+   }
+
+   .submit-btn:hover {
+      background-color: #218838;
+   }
+
+   .reset-btn:hover {
+      background-color: #c82333;
+   }
+</style>

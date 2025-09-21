@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .signature {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .debug {
+            color: red;
+            font-size: 10px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            {% if logo_path is defined and logo_path %}
+                <img src="{{ logo_path }}" alt="Logo" width="150">
+               
+            {% endif %}
+        </div>
+        
+        <h1>Confirmation d'inscription</h1>
+        <p>Bonjour {{ user.nom }} {{ user.prenom }},</p>
+        <p>Vous avez été inscrit avec succès au cours : <strong>{{ cours.title }}</strong>.</p>
+        <p>Nous sommes ravis de vous compter parmi nos participants.</p>
+        
+        <div class="content">
+            <p><strong>Nom du cours :</strong> {{ cours.title }}</p>
+        </div>
+
+        <div class="signature">
+            <p>Cordialement,</p>
+            <p><strong>L'équipe {{ app_name }}</strong></p>
+            {% if signature_path is defined and signature_path %}
+                <img src="{{ signature_path }}" alt="Signature" width="200">
+                
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

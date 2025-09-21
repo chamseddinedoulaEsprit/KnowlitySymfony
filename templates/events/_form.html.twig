@@ -1,0 +1,64 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<section class="get-in-touch">
+   <h1 class="title">Create Event</h1>
+   {{ form_start(form, { 'attr': { 'class': 'contact-form row', 'enctype': 'multipart/form-data' } }) }}
+   
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.title, {'attr': {'class': 'input-text js-input', 'placeholder': 'Enter event title'}}) }}
+      <div class="text-danger">{{ form_errors(form.title) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.description, {'attr': {'class': 'input-text js-input', 'placeholder': 'Enter event description', 'rows': 3}}) }}
+      <div class="text-danger">{{ form_errors(form.description) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.start_date, {'attr': {'class': 'input-text js-input', 'placeholder': 'Select start date'}}) }}
+      <div class="text-danger">{{ form_errors(form.start_date) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.end_date, {'attr': {'class': 'input-text js-input', 'placeholder': 'Select end date'}}) }}
+      <div class="text-danger">{{ form_errors(form.end_date) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+      <div class="text-danger">{{ form_errors(form.type) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.max_participants, {'attr': {'class': 'input-text js-input', 'placeholder': 'Enter max participants'}}) }}
+      <div class="text-danger">{{ form_errors(form.max_participants) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+      {{ form_widget(form.location, {'attr': {'class': 'input-text js-input', 'placeholder': 'Enter event location'}}) }}
+      <div class="text-danger">{{ form_errors(form.location) }}</div>
+   </div>
+
+   <div class="form-field col-lg-6">
+        {{ form_widget(form.category, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+        <div class="text-danger">{{ form_errors(form.category) }}</div>
+    </div>
+
+
+   <div class="form-field col-lg-12">
+      <div class="custom-file">
+         {{ form_widget(form.imageFile, {'attr': {'class': 'custom-file-input', 'id': 'eventImage'}}) }}
+         <label class="custom-file-label" for="eventImage">Choose file</label>
+      </div>
+      <div class="text-danger">{{ form_errors(form.imageFile) }}</div>
+   </div>
+
+   <div class="form-field col-lg-12">
+      <input class="submit-btn btn btn-primary" type="submit" value="Save">
+      <button type="reset" class="btn btn-secondary">Reset</button>
+   </div>
+
+   {{ form_end(form) }}
+</section>

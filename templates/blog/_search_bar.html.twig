@@ -1,0 +1,71 @@
+{% block stylesheets %}
+    <style>
+        .blog-search-input {
+            font-size: 1.1em;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            color: #fff;
+        }
+
+        .blog-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .blog-search-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .search-card {
+            background: transparent;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper::before {
+            content: '\f002';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+        }
+
+        #no-results-message {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        #no-results-message i {
+            display: block;
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock %}
+
+<div class="search-card">
+    <div class="search-wrapper">
+        <input type="text" 
+               id="blog-search" 
+               class="blog-search-input" 
+               placeholder="Rechercher un article..."
+               autocomplete="off">
+    </div>
+</div>

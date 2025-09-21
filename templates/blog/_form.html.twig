@@ -1,0 +1,113 @@
+{# templates/blog/_form.html.twig #}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body p-5">
+                <!-- Titre -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">{{ form_label(form.title) }}</label>
+                    {{ form_widget(form.title, {
+                        'attr': {
+                            'class': 'form-control form-control-lg' ~ (form_errors(form.title) ? ' is-invalid' : ''),
+                            'placeholder': 'Entrez le titre de votre blog',
+                            'minlength': '3',
+                            'maxlength': '255'
+                        }
+                    }) }}
+                    <div class="form-text text-muted">
+                        Un titre accrocheur qui résume bien votre article (3 à 255 caractères)
+                    </div>
+                    {% if form_errors(form.title) %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.title) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Contenu -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">{{ form_label(form.content) }}</label>
+                    {{ form_widget(form.content, {
+                        'attr': {
+                            'class': 'form-control' ~ (form_errors(form.content) ? ' is-invalid' : ''),
+                            'rows': '10',
+                            'style': 'min-height: 200px;',
+                            'placeholder': 'Rédigez votre article ici...',
+                            'minlength': '10'
+                        }
+                    }) }}
+                    <div class="form-text text-muted">
+                        Votre contenu doit faire au moins 10 caractères
+                    </div>
+                    {% if form_errors(form.content) %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.content) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Nom du créateur -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">{{ form_label(form.creatorName) }}</label>
+                    {{ form_widget(form.creatorName, {
+                        'attr': {
+                            'class': 'form-control' ~ (form_errors(form.creatorName) ? ' is-invalid' : ''),
+                            'placeholder': 'Votre nom'
+                        }
+                    }) }}
+                    {% if form_errors(form.creatorName) %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.creatorName) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Image du blog -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">{{ form_label(form.blogImage) }}</label>
+                    {{ form_widget(form.blogImage, {
+                        'attr': {
+                            'class': 'form-control' ~ (form_errors(form.blogImage) ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    <div class="form-text text-muted">
+                        Téléchargez une image pour votre blog (JPEG ou PNG, max 2 Mo).
+                    </div>
+                    {% if form_errors(form.blogImage) %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.blogImage) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Photo de profil -->
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">{{ form_label(form.userImage) }}</label>
+                    {{ form_widget(form.userImage, {
+                        'attr': {
+                            'class': 'form-control' ~ (form_errors(form.userImage) ? ' is-invalid' : ''),
+                            'placeholder': 'URL de votre photo de profil'
+                        }
+                    }) }}
+                    <div class="form-text text-muted">
+                        Fournissez une URL valide pour votre photo de profil.
+                    </div>
+                    {% if form_errors(form.userImage) %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.userImage) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Bouton de soumission -->
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i>{{ button_label|default('Enregistrer') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}

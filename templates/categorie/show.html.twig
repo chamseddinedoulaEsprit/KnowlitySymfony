@@ -1,0 +1,78 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Détails de la Catégorie{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Détails de la Catégorie</h3>
+                </div>
+                
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover text-nowrap">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ categorie.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <td>{{ categorie.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td>{{ categorie.descrption }}</td>
+                            </tr>
+                            <tr>
+                                <th>Icône</th>
+                                <td>
+                                    {% if categorie.icone %}
+                                        <img src="{{ asset('uploads/brochures/' ~ categorie.icone) }}" 
+                                             alt="Icône de la catégorie" 
+                                             style="max-width: 100px; max-height: 100px;">
+                                    {% else %}
+                                        Aucune icône
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Mots-clés</th>
+                                <td>
+                                    {% for mot in categorie.motsCles|split(',') %}
+                                        <span class="badge badge-info">{{ mot|trim }}</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Public cible</th>
+                                <td>
+                                    {% set publicLabels = {
+                                        'élèves': 'Élèves',
+                                        'étudiants': 'Étudiants',
+                                        'adultes': 'Adultes',
+                                        'professionnels': 'Professionnels'
+                                    } %}
+                                    {{ publicLabels[categorie.publicCible]|default('Non spécifié') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <a href="{{ path('app_categorie_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+            <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Modifier
+            </a>
+            {{ include('categorie/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,7 @@
+knp_snappy:
+    pdf:
+        enabled: true
+        binary: '"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"'
+    image:
+        enabled: true
+        binary: '"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"'

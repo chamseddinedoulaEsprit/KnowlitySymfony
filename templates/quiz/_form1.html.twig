@@ -1,0 +1,47 @@
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Quiz Details</h3>
+        </div>
+        <div class="card-body">
+            <!-- Input Fields -->
+            <div class="form-group">
+                {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.titre, {'attr': {
+                    'class': 'form-control form-control-border',
+                    'placeholder': 'Enter the title'
+                }}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.description, {'attr': {
+                    'class': 'form-control form-control-border border-width-2',
+                    'placeholder': 'Enter the description',
+                    'rows': '4'
+                }}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.scoreMax, 'Score Max', {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.scoreMax, {'attr': {
+                    'class': 'form-control rounded-0',
+                    'placeholder': 'Enter the maximum score'
+                }}) }}
+            </div>
+
+            <!-- Date Input -->
+            <div class="form-group">
+                {{ form_label(form.dateLimite, 'Date Limite', {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.dateLimite, {'attr': {
+                    'class': 'form-control form-control-border',
+                    'placeholder': 'Select the deadline date'
+                }}) }}
+            </div>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
+{{ form_end(form) }}

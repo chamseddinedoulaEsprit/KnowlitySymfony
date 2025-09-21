@@ -1,0 +1,70 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}EventRegistration{% endblock %}
+
+{% block stylesheet %}
+     <link rel="stylesheet" href="{{ asset('assets/css/events.css') }}">
+
+{% endblock %}
+
+
+{% block body %}
+    <div class="event-registration-page">
+        <h1>Event Registration</h1>
+
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ event_registration.id }}</td>
+                </tr>
+                <tr>
+                    <th>Event Title</th>
+                    <td><a href="{{ path('app_events_show', {'id': event_registration.getEvent.getId}) }}">{{ event_registration.getEvent.getTitle }}</a></td>
+                </tr>
+                <tr>
+                    <th>Seats Available</th>
+                    <td>{{ event_registration.getEvent.getSeatsAvailable }}</td>
+                </tr>
+                <tr>
+                    <th>User</th>
+                    <td>{{ event_registration.getUser.getNom }}</td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>{{ event_registration.status }}</td>
+                </tr>
+                <tr>
+                    <th>Registration_date</th>
+                    <td>{{ event_registration.registrationDate ? event_registration.registrationDate|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Places</th>
+                    <td>{{ event_registration.placesReserved }}</td>
+                </tr>
+                <tr>
+                    <th>From :</th>
+                    <td>{{ event_registration.comingFrom }}</td>
+                </tr>
+                <tr>
+                    <th>Disabled parking :</th>
+                    <td>{{ event_registration.disabledParking ? 'Yes' : 'No' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form action="{{ path('update_event_registration_status', {'id': event_registration.id}) }}" method="POST">
+            <div class="form-group">
+                <label for="status">Change Status:</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="Pending" {% if event_registration.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Confirmed" {% if event_registration.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option value="Canceled" {% if event_registration.status == 'Canceled' %}selected{% endif %}>Canceled</option>
+                    <!-- Add more options as necessary -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Update Status</button>
+        </form>
+
+    </div>
+{% endblock %}

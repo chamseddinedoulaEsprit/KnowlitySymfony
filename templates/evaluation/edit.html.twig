@@ -1,0 +1,162 @@
+   {% extends 'base3.html.twig' %}
+
+{% block title %}Modifier l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .edit-evaluation-form {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+            outline: none;
+        }
+        .form-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .badge-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        .badge-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .btn-primary {
+            background: #007bff;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .page-header {
+            background: #f8f9fa;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .breadcrumb {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Modifier l'évaluation</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_evaluation_showenseignant', {'id': evaluation.id}) }}">
+                                    <i class="fas fa-arrow-left"></i> Retour aux détails
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">Modifier</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="edit-evaluation-form">
+                    {{ form_start(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.title, 'Titre') }}
+                            {{ form_widget(form.title, {'attr': {'class': form.title.vars.valid ? 'form-control' : 'form-control is-invalid'}}) }}
+                            {{ form_errors(form.title, {'attr': {'class': 'form-error'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.description, 'Description') }}
+                            {{ form_widget(form.description, {'attr': {'class': form.description.vars.valid ? 'form-control' : 'form-control is-invalid', 'rows': '5', 'placeholder': 'Décrivez l\'évaluation'}}) }}
+                            {{ form_errors(form.description, {'attr': {'class': 'form-error'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.deadline, 'Date limite') }}
+                            {{ form_widget(form.deadline, {'attr': {'class': form.deadline.vars.valid ? 'form-control' : 'form-control is-invalid'}}) }}
+                            {{ form_errors(form.deadline, {'attr': {'class': 'form-error'}}) }}
+                        </div>
+
+                        <div class="badge-section">
+                            <h3>Configuration du Badge</h3>
+                            <p class="text-muted mb-4">Configurez un badge qui sera attribué aux étudiants ayant obtenu un excellent score.</p>
+                            
+                            <div class="form-group">
+                                {{ form_label(form.badgeThreshold) }}
+                                {{ form_widget(form.badgeThreshold, {'attr': {'class': form.badgeThreshold.vars.valid ? 'form-control' : 'form-control is-invalid'}}) }}
+                                {{ form_errors(form.badgeThreshold, {'attr': {'class': 'form-error'}}) }}
+                                <small class="form-text text-muted">Laissez vide pour ne pas utiliser de badge</small>
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.badgeTitle) }}
+orm-control is-invalid'}}) }}
+                                {{ form_errors(form.badgeTitle, {'attr': {'class': 'form-error'}}) }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.badgeImage) }}
+                                {{ form_widget(form.badgeImage, {'attr': {'class': form.badgeImage.vars.valid ? 'form-control' : 'form-control is-invalid'}}) }}
+                                {{ form_errors(form.badgeImage, {'attr': {'class': 'form-error'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a href="{{ path('app_evaluation_showenseignant', {'id': evaluation.id}) }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Categorie index{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Liste des Catégories</h3>
+
+            
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                               
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Icone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for categorie in categories %}
+                            <tr>
+                                
+                                <td>{{ categorie.name }}</td>
+                                <td>{{ categorie.descrption }}</td>
+                                <td> {% if categorie.icone %}
+                <img src="{{ asset('uploads/brochures/' ~ categorie.icone) }}" alt="{{ categorie.name }}" style="width: 87px; height: 87px;">
+            {% else %}
+                <span>No icon</span>
+            {% endif %}</td>
+                                <td>
+                                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" class="btn btn-info btn-sm">Show</a>
+                                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-primary btn-sm">Edit</a>
+                                    {{ include('categorie/_delete_form.html.twig') }}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ path('app_categorie_new') }}" class="btn btn-success">Create new</a>
+        </div>
+    </div>
+{% endblock %}

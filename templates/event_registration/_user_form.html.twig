@@ -1,0 +1,184 @@
+<section>
+   <h1>Reservation</h1>
+   {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
+
+   <table class="form-table">
+      <tr>
+         <td><label for="form_title">Reserved for :</label></td>
+         <td>
+            {{ form_widget(form.name, {
+                            'attr': {
+                                'class': 'input-text js-input',
+                                'placeholder': 'Enter Name'
+                            }
+                        }) }}
+                        <div class="form_errors">{{ form_errors(form.name) }}</div>
+         </td>
+      </tr>
+      <tr>
+         <td><label for="form_type">do you rquire special needs parking spot ?</label></td>
+         <td>
+            <div class="form-check form-check-inline">
+                {{ form_widget(form.disabled_parking[0], {
+                    'attr': {
+                        'class': 'form-check-input'
+                    }
+                }) }}
+                <label class="form-check-label" for="{{ form.disabled_parking[0].vars.id }}">
+                    Yes
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                {{ form_widget(form.disabled_parking[1], {
+                    'attr': {
+                        'class': 'form-check-input'
+                    }
+                }) }}
+                <label class="form-check-label" for="{{ form.disabled_parking[1].vars.id }}">
+                    No
+                </label>
+            </div>
+            <div class="form_errors">{{ form_errors(form.disabled_parking) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_max_participants">Number of places :</label></td>
+         <td>
+            {{ form_widget(form.places_reserved, {
+                            'attr': {
+                                'class': 'input-text js-input',
+                                'placeholder': 'Number of places (between 1->5)'
+                            }
+                        }) }}
+                        <div class="form-errors">{{ form_errors(form.places_reserved) }}</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td><label for="form_location">whre are you coming from :</label></td>
+         <td>
+            {{ form_widget(form.coming_from, {
+                            'attr': {
+                                'class': 'input-text js-input',
+                                'placeholder': 'City'
+                            }
+                        }) }}
+                        <div class="form_errors">{{ form_errors(form.coming_from) }}</div>
+         </td>
+      </tr>
+      <tr>
+      {{ form_widget(form.agreeTerms, {
+         'attr': {
+            'class': 'form-check-input',
+            'id': 'agreeTerms',
+            'hidden': 'hidden',
+            'checked': 'checked'
+         }
+      }) }}
+
+
+      </tr>
+
+      <tr>
+         <td colspan="2">
+            <div class="form-actions">
+               <input type="submit" value="Save" class="submit-btn">
+               <button type="reset" class="reset-btn">Reset</button>
+            </div>
+         </td>
+      </tr>
+   </table>
+
+   {{ form_end(form) }}
+</section>
+
+<style>
+   section {
+      width: 80%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f9;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   }
+
+   h1 {
+      text-align: center;
+      color: #333;
+   }
+
+   .form-table {
+      width: 100%;
+      border-collapse: collapse;
+   }
+
+   .form-table td {
+      padding: 10px;
+      vertical-align: top;
+   }
+
+   .form-table label {
+      font-weight: bold;
+      display: block;
+   }
+
+   .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+   }
+
+   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #007bff;
+      outline: none;
+   }
+
+   .form-errors {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+   }
+
+   .file-upload {
+      display: flex;
+      align-items: center;
+   }
+
+   .file-upload input[type="file"] {
+      margin-right: 10px;
+   }
+
+   .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+   }
+
+   .submit-btn, .reset-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+   }
+
+   .submit-btn {
+      background-color: #28a745;
+      color: white;
+   }
+
+   .reset-btn {
+      background-color: #dc3545;
+      color: white;
+   }
+
+   .submit-btn:hover {
+      background-color: #218838;
+   }
+
+   .reset-btn:hover {
+      background-color: #c82333;
+   }
+</style>

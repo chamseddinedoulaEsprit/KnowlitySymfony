@@ -1,0 +1,109 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Statistiques - {{ cours.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block page %}Statistiques du Cours{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-body p-4">
+            <h1 class="display-6 mb-4">
+                <i class="fas fa-chart-bar me-2"></i>Statistiques pour "{{ cours.title }}"
+            </h1>
+
+            <div class="mb-4">
+                {% set totalViews = 0 %}
+                {% for chapitre in cours.chapitres %}
+                    {% set totalViews = totalViews + chapitre.nbrvues|default(0) %}
+                {% endfor %}
+                <p class="lead"><strong>Nombre total de vues :</strong> {{ totalViews }}</p>
+            </div>
+
+            <h5 class="mb-3">Vues par chapitre :</h5>
+            
+            <div class="chart-container mb-4" style="position: relative; height:400px; width:100%">
+                <canvas id="viewsChart"></canvas>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_cours', {'id': cours.id}) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au cours
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('viewsChart').getContext('2d');
+    
+    // Prepare data from Twig
+    const chapters = {{ cours.chapitres|map(chapitre => chapitre.title ~ ' (#' ~ chapitre.chapOrder ~ ')')|json_encode|raw }};
+    const views = {{ cours.chapitres|map(chapitre => chapitre.nbrvues|default(0))|json_encode|raw }};
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chapters,
+            datasets: [{
+                label: 'Nombre de vues',
+                data: views,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                hoverBackgroundColor: 'rgba(54, 162, 235, 0.7)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Nombre de vues'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Chapitres'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            }
+        }
+    });
+});
+</script>
+
+<style>
+    .card-body {
+        background: #fff;
+    }
+    #viewsChart {
+        margin: 20px 0;
+    }
+</style>
+{% endblock %}

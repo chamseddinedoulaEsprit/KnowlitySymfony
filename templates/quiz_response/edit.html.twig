@@ -1,0 +1,22 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}New Quiz and QuizResponse{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="quiz-title">Create New Quiz and Quiz Response</h1>
+
+        <!-- QuizResponse Form -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h2>Quiz Response Details</h2>
+            </div>
+            <div class="card-body">
+                {{ include('quiz_response/_form.html.twig') }}
+            </div>
+        </div>
+
+        <!-- Back to List Link -->
+        <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+{% endblock %}

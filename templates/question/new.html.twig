@@ -1,0 +1,244 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Nouvelle Question{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/template.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/events.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/owl.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/lightbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/templatemo-eduwell-style.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        #code-preview {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #272822;
+        }
+        .preview-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        pre {
+            margin: 0 !important;
+            padding: 15px !important;
+            border-radius: 4px;
+            background: #272822 !important;
+        }
+        .code-container {
+            position: relative;
+        }
+        .language-label {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background-color: #3c3c3c;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            color: #fff;
+        }
+        .form-control {
+            margin-bottom: 1rem;
+        }
+        .form-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Nouvelle Question</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        
+                        <div class="form-group">
+                            {{ form_label(form.title) }}
+                            {{ form_widget(form.title, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form.title.vars.valid ? '' : ' is-invalid')
+                                }
+                            }) }}
+                            {% if not form.title.vars.valid %}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.title) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.enonce) }}
+                            {{ form_widget(form.enonce, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form.enonce.vars.valid ? '' : ' is-invalid')
+                                }
+                            }) }}
+                            {% if not form.enonce.vars.valid %}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.enonce) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.point) }}
+                            {{ form_widget(form.point, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form.point.vars.valid ? '' : ' is-invalid')
+                                }
+                            }) }}
+                            {% if not form.point.vars.valid %}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.point) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.ordreQuestion) }}
+                            {{ form_widget(form.ordreQuestion, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form.ordreQuestion.vars.valid ? '' : ' is-invalid')
+                                }
+                            }) }}
+                            {% if not form.ordreQuestion.vars.valid %}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(form.ordreQuestion) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.programmingLanguage) }}
+                                    {{ form_widget(form.programmingLanguage, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'id': 'programming_language'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.programmingLanguage) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.codeSnippet) }}
+                                    {{ form_widget(form.codeSnippet, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'id': 'code_extract',
+                                            'rows': 6,
+                                            'placeholder': 'Entrez votre code ici (optionnel)'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.codeSnippet) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="code-preview" class="mb-4" style="display: none;">
+                            <div class="preview-title">Prévisualisation du code :</div>
+                            <div class="code-container">
+                                <span class="language-label" id="language-display"></span>
+                                <pre><code id="preview-content"></code></pre>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> {{ button_label|default('Créer') }}
+                            </button>
+                            <a href="{{ path('app_question_index', {'evaluationId': app.request.get('evaluationId')}) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                            </a>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/isotope.min.js') }}"></script>
+    <script src="{{ asset('js/owl-carousel.js') }}"></script>
+    <script src="{{ asset('js/lightbox.js') }}"></script>
+    <script src="{{ asset('js/tabs.js') }}"></script>
+    <script src="{{ asset('js/video.js') }}"></script>
+    <script src="{{ asset('js/slick-slider.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeExtract = document.getElementById('code_extract');
+            const languageSelect = document.getElementById('programming_language');
+            const preview = document.getElementById('code-preview');
+            const previewContent = document.getElementById('preview-content');
+            const languageDisplay = document.getElementById('language-display');
+
+            function updatePreview() {
+                const code = codeExtract.value.trim();
+                const language = languageSelect.value;
+
+                if (code && language) {
+                    preview.style.display = 'block';
+                    previewContent.className = `language-${language}`;
+                    previewContent.textContent = code;
+                    languageDisplay.textContent = language.toUpperCase();
+                    Prism.highlightElement(previewContent);
+                } else {
+                    preview.style.display = 'none';
+                }
+            }
+
+            // Mettre à jour la prévisualisation lors de la saisie
+            codeExtract.addEventListener('input', updatePreview);
+
+            // Mettre à jour lors du changement de langage
+            languageSelect.addEventListener('change', updatePreview);
+
+            // Initialiser la prévisualisation si des valeurs existent déjà
+            if (codeExtract.value.trim() && languageSelect.value) {
+                updatePreview();
+            }
+        });
+    </script>
+{% endblock %}

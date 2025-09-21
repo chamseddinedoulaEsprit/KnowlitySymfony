@@ -1,0 +1,327 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultat de l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .evaluation-header {
+            background: linear-gradient(135deg, #0056b3 0%, #007bff 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .evaluation-title {
+            font-size: 2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .result-alert {
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-alert.alert-success {
+            background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+            color: white;
+        }
+
+        .result-alert.alert-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #ff4d5a 100%);
+            color: white;
+        }
+
+        .result-alert .alert-heading {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: none;
+        }
+
+        .question-card .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .question-card .card-header.inappropriate {
+            background: linear-gradient(135deg, #dc3545 0%, #ff4d5a 100%);
+            color: white;
+        }
+
+        .question-card .card-body {
+            padding: 20px;
+        }
+
+        .response-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid transparent;
+        }
+
+        .response-box.inappropriate {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .warning-alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-alert h5 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .warning-alert p {
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #ff4d5a 100%) !important;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #28a745 0%, #34ce57 100%) !important;
+        }
+
+        .comment-box {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .comment-box h6 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .deadline-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .achievement-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: badge-glow 2s infinite;
+        }
+
+        @keyframes badge-glow {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+        }
+
+        .badge-text {
+            margin-top: 10px;
+        }
+
+        .badge-text h5 {
+            color: white;
+            font-weight: 600;
+        }
+
+        .badge-text small {
+            color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="evaluation-header">
+            <h1 class="evaluation-title">{{ evaluation.title }}</h1>
+            {% if evaluation.description %}
+                <p class="mb-0">{{ evaluation.description }}</p>
+            {% endif %}
+            <div class="deadline-info">
+                <i class="fas fa-clock"></i>
+                {% if evaluation.deadline > date() %}
+                    Date limite : {{ evaluation.deadline|date('d/m/Y H:i') }}
+                {% else %}
+                    Évaluation terminée le {{ evaluation.deadline|date('d/m/Y H:i') }}
+                {% endif %}
+            </div>
+        </div>
+
+        {% if hasResponded %}
+            {% if isCorrected %}
+                <div class="result-alert alert {% if hasInappropriateContent %}alert-danger{% else %}alert-success{% endif %}">
+                    <h4 class="alert-heading">
+                        {% if hasInappropriateContent %}
+                            <i class="fas fa-exclamation-triangle"></i> Attention : Contenu inapproprié détecté !
+                        {% else %}
+                            <i class="fas fa-check-circle"></i> Évaluation corrigée
+                        {% endif %}
+                    </h4>
+                    <div class="score-display">
+                        Note finale : {{ totalScore }}/{{ maxScore }} 
+                        <small>({{ (totalScore/maxScore * 100)|number_format(1) }}%)</small>
+                        {% if totalScore == maxScore %}
+                            <div class="achievement-badge mt-3">
+                                <i class="fas fa-medal fa-2x text-warning"></i>
+                                <div class="badge-text mt-2">
+                                    <h5 class="mb-0">Score Parfait !</h5>
+                                    <small>Félicitations pour votre excellente performance</small>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Bouton de téléchargement PDF #}
+                <div class="d-flex justify-content-end mb-4">
+                    <a href="{{ path('evaluation_export_pdf', {'id': evaluation.id}) }}" class="btn btn-primary">
+                        <i class="fas fa-file-pdf"></i> Télécharger en PDF
+                    </a>
+                </div>
+
+                {% for question in questions %}
+{% set reponse = reponses[question.id] is defined ? reponses[question.id] : { note: 0, commentaire: '' } %}
+                    <div class="question-card">
+                        <div class="card-header d-flex justify-content-between align-items-center 
+                            {% if reponse.note == 0 and reponse.commentaire starts with 'AVERTISSEMENT' %}inappropriate{% endif %}">
+                            <h5 class="mb-0">Question {{ question.ordreQuestion }}</h5>
+                            <span class="badge {% if reponse.note == 0 %}bg-danger{% else %}bg-success{% endif %}">
+                                {{ reponse.note }}/{{ question.point }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="question-content">
+                                <h6>Question :</h6>
+                                <p>{{ question.enonce }}</p>
+                            </div>
+                            
+                            <div class="response-content">
+                                <h6>Votre réponse :</h6>
+                                {% if reponse.text is defined %}
+                                    <div class="response-box {% if reponse.note == 0 and reponse.commentaire starts with 'AVERTISSEMENT' %}inappropriate{% endif %}">
+                                        {{ reponse.text }}
+                                    </div>
+                                {% else %}
+                                    <div class="response-box">Aucune réponse disponible.</div>
+                                {% endif %}
+                            </div>
+
+                            {% if reponse.commentaire starts with 'AVERTISSEMENT' %}
+                                <div class="warning-alert">
+                                    <h5><i class="fas fa-exclamation-triangle"></i> Avertissement - Contenu inapproprié</h5>
+                                    <p>{{ reponse.commentaire[13:] }}</p>
+                                    <hr>
+                                    <p class="mb-0"><strong>Conséquence :</strong> Note attribuée : 0/{{ question.point }}</p>
+                                </div>
+                            {% else %}
+                                {% if reponse.commentaire %}
+                                    <div class="comment-box">
+                                        <h6><i class="fas fa-comment"></i> Commentaire de l'enseignant :</h6>
+                                        <p class="mb-0">{{ reponse.commentaire }}</p>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% if hasInappropriateContent %}
+                    <div class="warning-alert">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Important - Sanctions pour contenu inapproprié</h5>
+                        <p>Une ou plusieurs de vos réponses ont été identifiées comme contenant du contenu inapproprié. 
+                        Ces réponses ont automatiquement reçu une note de 0 et cet incident peut entraîner des sanctions disciplinaires supplémentaires.</p>
+                        <p class="mb-0">Veuillez prendre connaissance des avertissements ci-dessus et vous assurer de respecter le code de conduite dans vos futures réponses.</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if evaluation.deadline > date() %}
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">En attente de correction</h4>
+                        <p>Votre évaluation a été soumise et est en attente de correction par l'enseignant.</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">Évaluation terminée</h4>
+                        <p>La période d'évaluation est terminée. Les résultats seront disponibles après la correction.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {% if evaluation.deadline > date() %}
+                <div class="alert alert-primary">
+                    <h4 class="alert-heading">Évaluation en cours</h4>
+                    <p>Vous n'avez pas encore répondu à cette évaluation. La date limite est le {{ evaluation.deadline|date('d/m/Y H:i') }}.</p>
+                    <a href="{{ path('etudiant_evaluation_answer', {'id': evaluation.id}) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Participer à l'évaluation
+                    </a>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <h4 class="alert-heading">Évaluation terminée</h4>
+                    <p>La période d'évaluation est terminée. Il n'est plus possible d'y participer.</p>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <a href="{{ path('app_cours_show', {'id': evaluation.cours.id}) }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+{% endblock %}

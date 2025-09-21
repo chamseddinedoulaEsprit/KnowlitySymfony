@@ -1,0 +1,97 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}EventRegistration{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ asset('assets/css/event_chart.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div id="chart-container"></div>
+{% endblock %}
+
+{% block script %}
+<script src="https://echarts.apache.org/en/js/vendors/echarts/dist/echarts.min.js"></script>
+<script>
+    var dom = document.getElementById('chart-container');
+    var myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+    });
+
+    // Convert dates to readable format
+    var eventDates = {{ events|map(e => e.startDate.format('Y-m-d'))|json_encode()|raw }};
+    var seatsAvailable = {{ events|map(e => e.seatsAvailable)|json_encode()|raw }};
+    var maxParticipants = {{ events|map(e => e.maxParticipants)|json_encode()|raw }};
+
+    var option = {
+        title: {
+            text: 'Event Registration Statistics',
+            subtext: 'Seats Availability by Date'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['Seats Available', 'Max Participants']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: { show: true, readOnly: false },
+                magicType: { show: true, type: ['line', 'bar'] },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+        calculable: true,
+        xAxis: [
+            {
+                type: 'category',
+                data: eventDates
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: 'Seats Available',
+                type: 'bar',
+                data: seatsAvailable,
+                markPoint: {
+                    data: [
+                        { type: 'max', name: 'Max' },
+                        { type: 'min', name: 'Min' }
+                    ]
+                },
+                markLine: {
+                    data: [{ type: 'average', name: 'Avg' }]
+                }
+            },
+            {
+                name: 'Max Participants',
+                type: 'bar',
+                data: maxParticipants,
+                markPoint: {
+                    data: [
+                        { type: 'max', name: 'Max' },
+                        { type: 'min', name: 'Min' }
+                    ]
+                },
+                markLine: {
+                    data: [{ type: 'average', name: 'Avg' }]
+                }
+            }
+        ]
+    };
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+</script>
+{% endblock %}

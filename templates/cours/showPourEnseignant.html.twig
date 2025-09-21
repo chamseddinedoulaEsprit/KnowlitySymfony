@@ -1,0 +1,345 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Cours - {{ cour.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/chapitre1.css') }}">
+{% endblock %}
+
+
+
+{% block page %}Cours{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ path('coursEnseignant', {'id': 1}) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+        <a href="{{ path('app_cours_edit', {'id': cour.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i>Modifier
+        </a>
+    </div>
+
+    <!-- Main Course Card -->
+    <div class="card shadow-lg mb-5">
+        <div class="row g-0">
+            <!-- Image Section -->
+            <div class="col-md-6">
+                <img src="http://localhost/demo/Uploads/{{ cour.urlImage}}"
+                     class="img-fluid rounded-start object-fit-cover"
+                     alt="{{ cour.title }}">
+            </div>
+
+            <!-- Content Section -->
+            <div class="col-md-6">
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h1 class="display-6 mb-3">{{ cour.title }}</h1>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-primary">{{ cour.matiere.titre }}</span>
+                            <span class="badge bg-secondary">{{ cour.matiere.categorie.name }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats Section -->
+                    <div class="bg-light p-4 rounded-3 mb-4">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="h2 text-primary">{{ cour.nbChapitres }}</div>
+                                <small class="text-muted">Chapitres</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="h2 text-danger">{{ cour.dureeTotale }} h</div>
+                                <small class="text-muted">Durée totale</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="h2 text-success">
+                                    {% if cour.prix == 0 %}
+                                        Gratuit
+                                    {% else %}
+                                        {{ cour.prix }} DT
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">Prix</small>
+                            </div>
+                        </div>
+                        <div class="row mt-3 text-center">
+                            <div class="col-6">
+                                <div class="h5">
+                                    <i class="fas fa-language"></i> Langue : 
+                                    <span class="badge bg-info">{{ cour.langue|upper }}</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="h5">
+                                    <i class="fas fa-users"></i> Étudiants : 
+                                    <span class="badge bg-dark">{{ cour.etudiants|length }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Link Section -->
+                    {% if cour.prix > 0 %}
+                    <div class="alert alert-warning mb-4">
+                        <h5><i class="fas fa-link me-2"></i>Lien de paiement :</h5>
+                        <a href="{{ cour.lienDePaiment }}" target="_blank" class="text-break">
+                            {{ cour.lienDePaiment }}
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Description Section -->
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="fas fa-file-alt me-2"></i>Description</h5>
+                        <p class="text-muted">{{ cour.description }}</p>
+                    </div>
+
+                    <!-- Teacher Section -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chalkboard-teacher me-2"></i>
+                                Enseignant du cours
+                            </h5>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                   <img src="{{ asset('uploads/' ~ cour.enseignant.image) }}"  
+                                 class="rounded-circle shadow-lg border border-3 border-white" 
+                                 width="80" 
+                                 height="80" 
+                                 alt="Formateur">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">{{ cour.enseignant.nom }} {{ cour.enseignant.prenom }}</h6>
+                                    <small class="text-muted">{{ cour.enseignant.email }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Favorites Section -->
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-star me-2"></i>
+                        Ce cours est dans les favoris de 
+                        <strong>{{ cour.etudiantsfavoris|length }}</strong> étudiant(s)
+                    </div>
+
+                    <!-- Stats Button -->
+                    <a href="{{ path('app_cours_stats', {'id': cour.id}) }}" class="btn btn-info w-100">
+                        <i class="fas fa-chart-bar me-2"></i>Afficher les statistiques
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chapters List -->
+    <h2 class="mb-4">
+        <i class="fas fa-list-ol me-2"></i>Liste des Chapitres
+    </h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for chapitre in cour.chapitres %}
+            <div class="col">
+                <div class="card h-100 shadow-sm chapter-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary">#{{ chapitre.chapOrder }}</span>
+                            <small class="text-muted"></small>
+                        </div>
+                        <h5 class="card-title mb-3">{{ chapitre.title }}</h5>
+                        <br><br>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ path('app_chapitre_show', {'id': chapitre.id}) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>Voir
+                            </a>
+                            <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}" 
+                               class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit me-1"></i>Modifier
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center py-4">
+                    <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                    <h4 class="alert-heading">Aucun chapitre trouvé</h4>
+                    <p class="mb-0">Commencez par ajouter un nouveau chapitre</p>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="col">
+            <div class="card h-100 shadow-sm chapter-card">
+                <div class="card-body">
+                    <a href="{{ path('app_chapitre_new', {'id': cour.id}) }}" 
+                       class="btn btn-outline-success btn-sm but1">
+                        <i class="fas fa-plus me-1"></i>Ajouter un chapitre
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evaluations List -->
+    <h2 class="mb-4">
+        <i class="fas fa-list-ol me-2"></i>Liste des évaluations
+    </h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for evaluation in cour.evaluations %}
+            <div class="col">
+                <div class="card h-100 shadow-sm chapter-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary">#</span>
+                            <small class="text-muted">Date limite: {{ evaluation.deadline|date('d/m/Y H:i') }}</small>
+                        </div>
+                        <h5 class="card-title mb-3">{{ evaluation.title }}</h5>
+                        <p class="card-text">{{ evaluation.description }}</p>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ path('app_evaluation_showenseignant', {'id': evaluation.id}) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>Voir
+                            </a>
+                            <a href="{{ path('app_evaluation_editenseignant', {'id': evaluation.id}) }}" 
+                               class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit me-1"></i>Modifier
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center py-4">
+                    <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                    <h4 class="alert-heading">Aucune évaluation trouvée</h4>
+                    <p class="mb-0">Commencez par ajouter une nouvelle évaluation.</p>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="col">
+            <div class="card h-100 shadow-sm chapter-card">
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <a href="{{ path('app_evaluation_newenseignant', {'coursId': cour.id}) }}" 
+                       class="btn btn-outline-success btn-sm but1">
+                        <i class="fas fa-plus me-1"></i>Ajouter une évaluation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<h2 class="mb-4">
+    <i class="fas fa-list-ol me-2"></i>Liste des Quiz
+</h2>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for quiz in cour.quizzes %}
+        <div class="col">
+            <div class="card h-100 shadow-sm chapter-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary">#{{ quiz.id }}</span>
+                        <small class="text-muted">Date limite: {{ quiz.dateLimite|date('d/m/Y H:i') }}</small>
+                    </div>
+                    <h5 class="card-title mb-3">{{ quiz.titre }}</h5>
+                    <p class="card-text">{{ quiz.description }}</p>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>Voir
+                        </a>
+                        <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" 
+                           class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-edit me-1"></i>Modifier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                <h4 class="alert-heading">Aucun quiz trouvé</h4>
+                <p class="mb-0">Commencez par ajouter un nouveau quiz.</p>
+            </div>
+        </div>
+    {% endfor %}
+    
+    <!-- Carte pour ajouter un nouveau quiz -->
+    <div class="col">
+        <div class="card h-100 shadow-sm chapter-card">
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <a href="{{ path('app_quiz_new',{'id':cour.id}) }}" 
+                   class="btn btn-outline-success btn-sm but1">
+                   <i class="fas fa-plus me-1"></i>Ajouter un quiz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .object-fit-cover {
+        object-fit: contain;
+        height: 100%;
+        width: 100%;
+    }
+
+    .chapter-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .chapter-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+    }
+
+    .col {
+        margin-bottom: 10px;
+    }
+
+    .but1 {
+        height: 100%;
+        width: 100%;
+        text-align: center;
+    }
+
+    .badge {
+        margin-right: 10px;
+        font-size: 0.9em;
+        padding: 0.5em 0.8em;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: white;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+        color: white;
+        text-decoration: none;
+    }
+
+    .alert-warning a {
+        color: #664d03;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

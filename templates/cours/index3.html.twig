@@ -1,0 +1,212 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Cours{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if app.session.get('roles') is null or app.session.get('deleted') == 1 %}
+        <script>
+            window.location.href = "{{ app.session.get('deleted') == 1 ? path('logout') : path('app_login') }}";
+        </script>
+    {% endif %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/chapitre1.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4 text-center fw-bold">Explorez les cours auxquels vous êtes inscrit</h1>
+
+    <!-- Filtres améliorés -->
+    <div class="card shadow-lg mb-5 border-0">
+        <div class="card-body p-4">
+            <form action="{{ path('app_cours_filter1') }}" method="get" class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <label for="matiere" class="form-label text-secondary mb-2">Filtrer par matière :</label>
+                    <select name="matiere" id="matiere" class="form-select form-select-lg shadow-sm">
+                        <option value="">Toutes les matières</option>
+                        {% for matiere in matieres %}
+                            <option value="{{ matiere.id }}" {{ app.request.query.get('matiere') == matiere.id ? 'selected' : '' }}>
+                                {{ matiere.titre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-lg">
+                        <i class="fas fa-filter me-2"></i>Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+     <!-- Grille de cours -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for cour in cours %}
+        <div class="col course-card d-none">
+            <div class="card h-100 shadow-lg border-0 overflow-hidden transform-on-hover">
+                <div class="card-header position-relative p-0 overflow-hidden" style="height: 180px;">
+                    <img src="http://localhost/demo/Uploads/{{ cour.urlImage}}"
+                         class="card-img-top h-100 object-fit-cover" 
+                         alt="{{ cour.title }}">
+                    <div class="image-overlay">
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-3 shadow-sm">
+                            {{ cour.enseignant.nom }} {{ cour.enseignant.prenom }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-body position-relative pt-4">
+                    <div class="course-avatar position-absolute top-0 start-50 translate-middle" style="top: -21px;">
+                        <img src="{{ asset('uploads/' ~ cour.enseignant.image) }}"  
+                                 class="rounded-circle shadow-lg border border-3 border-white" 
+                                 width="80" 
+                                 height="80" 
+                                 alt="Formateur">
+                    </div>
+                    <h3 class="h5 fw-bold mb-3 text-center">{{ cour.title }}</h3>
+                    
+                    <div class="d-flex justify-content-center gap-3 mb-3">
+                        <div class="text-center">
+                            <div class="h4 mb-0 text-primary">{{ cour.nbChapitres }}</div>
+                            <small class="text-muted">Chapitres</small>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="text-center">
+                            <div class="h4 mb-0 text-primary">{{ cour.NbEtudiants }}</div>
+                            <small class="text-muted">Apprenants</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 pt-0 pb-4">
+                    <a href="{{ path('app_cours_show', {'id': cour.id}) }}" 
+                       class="btn btn-outline-primary w-100 btn-hover">
+                        <i class="fas fa-book-open me-2"></i>Voir le cours
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info shadow-lg text-center py-4">
+                <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                <h4 class="alert-heading">Aucun cours disponible</h4>
+                <p class="mb-0">Commencez par créer un nouveau cours !</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="text-center mt-4">
+    <button id="loadMoreCourses" class="btn btn-link">
+        <i class="fas fa-arrow-down"></i> Afficher plus
+    </button>
+
+
+</div>
+</div>
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+    const courses = document.querySelectorAll(".course-card");
+    const loadMoreButton = document.getElementById("loadMoreCourses");
+    let visibleCourses = 6;
+
+    // Afficher les premiers cours
+    courses.forEach((course, index) => {
+        if (index < visibleCourses) {
+            course.classList.remove("d-none");
+        }
+    });
+
+    // Cacher le bouton initialement si tous les cours sont visibles
+    if (visibleCourses >= courses.length) {
+        loadMoreButton.style.display = "none";
+    }
+
+    // Gérer le clic sur "Afficher plus"
+    loadMoreButton.addEventListener("click", () => {
+        visibleCourses += 6;
+        courses.forEach((course, index) => {
+            if (index < visibleCourses) {
+                course.classList.remove("d-none");
+            }
+        });
+
+        // Cacher le bouton si tous les cours sont visibles
+        if (visibleCourses >= courses.length) {
+            loadMoreButton.style.display = "none";
+        }
+    });
+});
+
+</script>
+
+<style>
+    .transform-on-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #loadMoreCourses {
+        color: #007bff;
+        transition: transform 0.3s ease;
+    }
+
+    #loadMoreCourses:hover {
+        color: #0056b3;
+        transform: translateY(3px);
+    }
+    
+    .transform-on-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
+    }
+    
+    .image-overlay {
+        position: absolute;
+        color:white;    
+        top: 0;
+        left: 0;
+        right: 0;
+        padding-left: 39px;
+    padding-top: 10px;
+    font-family: ui-serif;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
+    }
+    
+    .course-avatar {
+        z-index: 2;
+        margin-top: -40px;
+    }
+    
+    .object-fit-cover {
+        object-fit: cover;
+        object-position: center;
+    }
+    
+    .btn-hover {
+        background-color:rgb(123, 160, 216);
+        color:black !important;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-hover:hover {
+        background-color: #0d6efd;
+        color: white !important;
+    }
+     .card-body {
+        line-height: 1.7;
+    }
+    
+    .alert p {
+        margin-bottom: 0.5rem;
+    }
+    .col{
+            margin-bottom: 10px;
+    }
+    .text-center{
+        margin-left: 10px;
+        margin-right:10px;
+    }
+</style>
+{% endblock %}

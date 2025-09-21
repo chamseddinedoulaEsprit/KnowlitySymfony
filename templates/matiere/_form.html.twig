@@ -1,0 +1,84 @@
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Matière</h3>
+    </div>
+    
+    {{ form_start(form) }}
+    <div class="card-body">
+        <!-- Titre -->
+        <div class="form-group">
+            {{ form_label(form.titre, 'Titre de la matière', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.titre, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Entrez le titre de la matière'
+                }
+            }) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <!-- Catégorie -->
+        <div class="form-group">
+            {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.categorie, {
+                'attr': {
+                    'class': 'form-select'
+                }
+            }) }}
+            {{ form_errors(form.categorie) }}
+        </div>
+
+        <!-- Prérequis -->
+        <div class="form-group">
+            {{ form_label(form.prerequis, 'Prérequis', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.prerequis, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Listez les prérequis nécessaires'
+                }
+            }) }}
+            {{ form_errors(form.prerequis) }}
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {
+                'attr': {
+                    'class': 'form-control',
+                    'rows': 4,
+                    'placeholder': 'Décrivez la matière'
+                }
+            }) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <!-- Couleur du thème -->
+        <div class="form-group">
+            {{ form_label(form.couleur_theme, 'Couleur du thème', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.couleur_theme, {
+                'attr': {
+                    'class': 'form-control',
+                    'type': 'color'
+                }
+            }) }}
+            {{ form_errors(form.couleur_theme) }}
+        </div>
+    </div>
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </div>
+    {{ form_end(form) }}
+</div>
+
+<style>
+    .form-select {
+        background-position: right 0.75rem center;
+    }
+    
+    .form-control[type="color"] {
+        height: 2.5rem;
+        padding: 0.25rem;
+        width: 100px;
+    }
+</style>

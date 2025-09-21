@@ -1,0 +1,113 @@
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+.card-solid{margin-top: 10px;}
+.redB{
+    background-color: rgb(167, 35, 35);
+    margin-top: 10px;
+}
+.demandes-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.demande-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 280px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.demande-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.demande-info p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+    margin: 0.5rem 0;
+}
+
+.demande-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+.btn1 {
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-propose {
+    background-color: rgb(243 186 164);
+margin-right: 73px;
+}
+
+.btn-propose:hover {
+    background-color: rgb(121 89 77);
+}
+.btn-propose2 {
+    background-color: #2ecc71;
+
+}
+
+.btn-propose2:hover {
+    background-color: #27ae60;
+}
+.btn-propose1 {
+    background-color:rgb(0, 4, 84);
+}
+
+.btn-propose1:hover {
+    background-color: rgb(36 40 117);
+}
+
+.no-records {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    padding: 2rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .demande-card {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+
+    .demandes-container {
+        padding: 1rem;
+        justify-content: flex-start;
+    }
+}

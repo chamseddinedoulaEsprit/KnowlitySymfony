@@ -1,0 +1,434 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours - {{ cour.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+    {% if app.session.get('roles') is null or app.session.get('deleted') == 1 %}
+        <script>
+            window.location.href = "{{ app.session.get('deleted') == 1 ? path('logout') : path('app_login') }}";
+        </script>
+    {% endif %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/chapitre1.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <!-- Conteneur du nouveau guide pour cette page -->
+    <div data-controller="course-guide" class="guide-container">
+        <div data-course-guide-target="tooltip" class="guide-tooltip d-none">
+            <div class="guide-content" data-course-guide-target="content"></div>
+            <div class="guide-actions">
+                <button data-action="click->course-guide#previous" class="btn btn-sm btn-secondary">Précédent</button>
+                <button data-action="click->course-guide#next" class="btn btn-sm btn-primary">Suivant</button>
+                <button data-action="click->course-guide#close" class="btn btn-sm btn-danger">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton Retour -->
+    <a href="{{ path('app_cours_index2') }}" class="btn btn-outline-secondary mb-4" data-course-guide-step="back-button">
+        <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+    </a>
+
+    <!-- Section Cours -->
+    <div class="card shadow-lg mb-5" data-course-guide-step="course-details">
+        <div class="row g-0">
+            <!-- Image -->
+            <div class="col-md-6">
+                <img src="http://localhost/demo/Uploads/{{ cour.urlImage}}" 
+                     class="img-fluid rounded-start object-fit-cover"
+                     alt="{{ cour.title }}">
+            </div>
+            
+            <!-- Contenu -->
+            <div class="col-md-6">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h1 class="card-title display-6 mb-2">{{ cour.title }}</h1><br>
+                            <h1 class="card-title display-6 mb-2"><large>Langue :</large>{{ cour.langue }}</h1>
+                        </div>
+                        <span class="text-muted">Enseignant : {{ cour.enseignant.nom }} {{ cour.enseignant.prenom }}</span>
+                    </div>
+
+                    <p class="card-text lead mb-4">{{ cour.matiere.categorie.name }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5 class="mb-0">
+                                <i class="fas fa-book-open me-2"></i>{{ cour.nbChapitres }} Chapitres
+                            </h5>
+                        </div>
+                        <div class="bg-light p-3 rounded">
+                            <h2 class="text-primary mb-0">
+                                {% if cour.prix == 0 %}
+                                    Gratuit
+                                {% else %}
+                                    {{ cour.prix }} DT
+                                {% endif %}
+                            </h2>
+                        </div>
+                    </div>
+
+                    {% if cour.isUserEnrolled(app.session.get('id')) %}
+                        <div class="text-center mt-3" data-course-guide-step="favorite-enrolled">
+                            <form action="{{ path('app_cours_toggle_favorite', { id: cour.id }) }}" method="POST">
+                                {% if cour.isUserFavorite(app.session.get('id')) %}
+                                    <button type="submit" class="btn btn-link p-0">
+                                        <i class="fas fa-star text-warning" style="position: relative; right: -235px; top: -187px;"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-link p-0">
+                                        <i class="far fa-star text-muted" style="position: relative; right: -235px; top: -187px;"></i>
+                                    </button>
+                                {% endif %}
+                            </form>
+                        </div>
+                        <div style="margin-bottom: 25px;" class="w-100 text-center py-3">
+                            <a href="{{ path('generate_pdf1', {'userId': app.session.get('id'), 'coursId': cour.id}) }}" 
+                               class="alert alert-primary w-100 text-center py-4">
+                                Télécharger le reçu (PDF)
+                            </a>
+                        </div>
+                        <div class="alert alert-success w-100 text-center py-3">
+                            <i class="fas fa-check-circle me-2"></i>Vous êtes déjà inscrit à ce cours
+                        </div>
+                    {% else %}
+                        <button class="btn btn-primary btn-lg w-100 py-3" 
+                                onclick="showVerification()" 
+                                data-course-guide-step="enroll-button">
+                            <i class="fas fa-user-plus me-2"></i>S'inscrire maintenant
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="card shadow-lg mb-5" data-course-guide-step="description">
+        <div class="card-header bg-light">
+            <h3 class="card-title mb-0">
+                <i class="fas fa-info-circle me-2"></i>Description détaillée
+            </h3>
+        </div>
+        <div class="card-body p-4">
+            <p class="mb-0 text-muted">{{ cour.description }}</p>
+        </div>
+    </div>
+
+    <!-- Liste des chapitres -->
+    {% if cour.isUserEnrolled(app.session.get('id')) %}
+        <h2 class="mb-4">
+    <i class="fas fa-list-ol me-2"></i>Liste des Chapitres
+</h2>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for chapitre in cour.chapitres %}
+        <div class="col">
+            <div class="card h-100 shadow-sm chapter-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-secondary">Chapitre</span>
+                        <small class="text-muted">Ordre : {{ chapitre.chapOrder }}</small>
+                    </div>
+                    <h5 class="card-title mb-3">{{ chapitre.title }}</h5>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ path('app_etudiant', {'id': chapitre.id}) }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-2"></i>Voir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                <h4 class="alert-heading">Aucun chapitre disponible</h4>
+                <p class="mb-0">Ce cours ne contient pas encore de chapitres</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<h2 class="mb-4">
+    <i class="fas fa-list-ol me-2"></i>Liste des Évaluations
+</h2>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for evaluation in cour.evaluations %}
+        <div class="col">
+            <div class="card h-100 shadow-sm chapter-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary">#{{ evaluation.id }}</span>
+                        <small class="text-muted">Date limite : {{ evaluation.deadline|date('d/m/Y H:i') }}</small>
+                    </div>
+                    <h5 class="card-title mb-3">{{ evaluation.title }}</h5>
+                    <p class="card-text">{{ evaluation.description }}</p>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ path('app_evaluation_showetudiant', {'id': evaluation.id}) }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-2"></i>Voir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                <h4 class="alert-heading">Aucune évaluation trouvée</h4>
+                <p class="mb-0">Aucune évaluation n'est disponible pour le moment.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<h2 class="mb-4">
+    <i class="fas fa-list-ol me-2"></i>Liste des Quiz
+</h2>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for quiz in cour.quizzes %}
+        <div class="col">
+            <div class="card h-100 shadow-sm chapter-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary">#{{ quiz.id }}</span>
+                        <small class="text-muted">Date limite : {{ quiz.dateLimite|date('d/m/Y H:i') }}</small>
+                    </div>
+                    <h5 class="card-title mb-3">{{ quiz.titre }}</h5>
+                    <p class="card-text">{{ quiz.description }}</p>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ path('quiz_show2', {'id': quiz.id}) }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-2"></i>Participer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                <h4 class="alert-heading">Aucun quiz trouvé</h4>
+                <p class="mb-0">Aucun quiz n'est disponible pour le moment.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+    {% endif %}
+
+
+<!-- Modal de vérification -->
+<div id="verificationModal" class="verification-overlay" style="display: none;">
+    <div class="verification-content">
+        <h4>Confirmation requise</h4>
+        <p>Êtes-vous sûr de vouloir continuer ?</p>
+        <div class="d-flex gap-2 justify-content-end mt-4">
+            <button class="btn btn-secondary" onclick="hideVerification()">Annuler</button>
+            <a href="{% if cour.lienDePaiment == '' %}{{ path('route2', {'id': cour.id}) }}{% else %}{{ cour.lienDePaiment }}{% endif %}" 
+               class="btn btn-primary">
+                Confirmer
+            </a>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+function showVerification() {
+    document.getElementById('verificationModal').style.display = 'flex';
+}
+
+function hideVerification() {
+    document.getElementById('verificationModal').style.display = 'none';
+}
+</script>
+
+<style>
+.verification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.verification-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.object-fit-cover {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+.btn-danger{margin-top:0 !important;}
+.btn-outline-secondary {
+    color: black;
+    background-color: rgb(173, 186, 224);
+}
+
+.btn-outline-primary {
+    color: black;
+    background-color: rgb(51, 104, 252);
+}
+
+.chapter-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chapter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+}
+
+.card-header {
+    background: linear-gradient(120deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.btn-outline-primary {
+    border-width: 2px;
+}
+
+.lead {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #495057;
+}
+
+/* Styles améliorés pour le guide (identiques au précédent pour cohérence) */
+.guide-tooltip {
+    position: absolute;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-width: 410px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    animation: fadeIn 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.guide-tooltip.d-none {
+    display: none;
+}
+
+.guide-tooltip::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    transform: rotate(45deg);
+    z-index: -1;
+    top: var(--arrow-top, -6px);
+    bottom: var(--arrow-bottom, auto);
+    left: 50%;
+    margin-left: -6px;
+    box-shadow: var(--arrow-shadow, -2px -2px 6px rgba(0, 0, 0, 0.1));
+}
+
+.guide-content {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.guide-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.guide-actions .btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.guide-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.guide-actions .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.guide-actions .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.guide-actions .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.guide-highlight {
+    position: relative;
+    z-index: 999;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2);
+    border-radius: 8px;
+    animation: pulse 1.5s infinite;
+}
+
+/* Animation d'entrée */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation de surbrillance */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.6), 0 0 25px rgba(13, 110, 253, 0.3); }
+    100% { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2); }
+}
+
+/* Responsive design pour le guide */
+@media (max-width: 768px) {
+    .guide-tooltip {
+        max-width: 280px;
+        padding: 15px;
+    }
+    .guide-content {
+        font-size: 1rem;
+    }
+    .guide-actions .btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+}
+</style>
+{% endblock %}

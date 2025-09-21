@@ -1,0 +1,44 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}QuizResponse Index{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Quiz Responses</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Label</th>
+                    <th>Points</th>
+                    <th>Question Text</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for quiz_response in quiz_responses %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>4 label</td> {# Static label (adjust if needed) #}
+                    <td>{{ quiz_response.question.points ?? 0 }}</td> {# Points from linked question #}
+                    <td>{{ quiz_response.question.text ?? 'N/A' }}</td> {# Question text #}
+                    <td>{{ quiz_response.question.order ?? 0 }}</td> {# Order from question #}
+                    <td>
+                        <a href="{{ path('app_quiz_response_show', {'id': quiz_response.id}) }}" class="btn btn-info btn-sm">Show</a>
+                        <a href="{{ path('app_quiz_response_edit', {'id': quiz_response.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="post" action="{{ path('app_quiz_response_delete', {'id': quiz_response.id}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz_response.id) }}">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No responses found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

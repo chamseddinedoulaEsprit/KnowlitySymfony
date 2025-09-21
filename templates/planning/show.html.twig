@@ -1,0 +1,42 @@
+<div class="planning-grid">
+    {% for day, slots in schedule %}
+        <div class="day-column">
+            <h3>{{ day }}</h3>
+            {% for time, course in slots %}
+                <div class="time-slot {{ course ? 'booked' : 'free' }}" 
+                     style="height: {{ constants.TIME_SLOT_INTERVAL }}px">
+                    <span class="time">{{ time }}</span>
+                    {% if course %}
+                        <div class="course-badge">
+                            {{ course.title }}<br>
+                            {{ course.matiere.nom }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    .planning-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+    .time-slot {
+        border: 1px solid #ddd;
+        margin: 2px 0;
+        padding: 5px;
+        position: relative;
+    }
+    .booked { background-color: #ffebee; }
+    .free { background-color: #e8f5e9; }
+    .time { font-size: 0.8em; color: #666; }
+    .course-badge {
+        background: white;
+        padding: 3px;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+</style>

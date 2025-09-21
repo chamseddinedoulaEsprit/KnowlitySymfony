@@ -1,0 +1,73 @@
+{% extends 'base_login.html.twig' %}
+  {% block body %}
+        
+         <section> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span>
+        
+  <div class="signin"> 
+
+    <div class="content"> 
+
+     <h2>   Login Page</h2>   
+  
+
+<form method="post" action="{{ path('app_login') }}">
+
+
+    <div class="form"> 
+     <div class="inputBox"> 
+{% if app.session.get('user_nom')%}
+       il ya une session actuelle
+       <a href="{{ path('logout') }}"> <input type="x" value= "Logout"> </a>
+       {% if app.session.get('roles') == "Etudiant"%}
+       <a href="{{ path('front') }}"><input type="x" value= "Return To your Page"></a>
+         {% endif %}
+       {% if app.session.get('roles') == "Enseignant"%}
+       <a href="{{ path('logout') }}"><input type="x" value= "Return To your Page"></a>
+         {% endif %}
+          {% if app.session.get('roles') == "Admin"%}
+       <a href="{{ path('back') }}"><input type="x" value= "Return To your Page"></a>
+         {% endif %}
+
+  {% else %}
+       <input type="email"  name="email" id="email" class="form-control"  required autofocus>
+
+      </div>
+
+          <div class="inputBox"> 
+
+        <input type="Password" name="password" id="password" class="form-control" autocomplete="current-password"  required>
+
+      </div> 
+   <div class="links"> 
+       <a href="/user/resetpassword">Forgot Password</a> 
+      
+       <a href="/user/choice">Signup</a> 
+
+      </div>
+     
+         <div class="inputBox"> 
+  
+
+ 
+       <input type="submit" value="Login"> 
+
+  {% endif %}
+      </div> 
+  
+ 
+
+    </form>
+  
+    </div> 
+
+   </div> 
+   
+
+      
+     
+
+    
+      {% endblock %}
+
+
+

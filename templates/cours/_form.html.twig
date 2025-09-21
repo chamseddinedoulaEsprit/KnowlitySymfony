@@ -1,0 +1,166 @@
+<div class="card shadow-lg border-0">
+    <div class="card-header bg-primary text-white py-3">
+        <h3 class="card-title mb-0"><i class="fas fa-book-open me-2"></i>Cours</h3>
+    </div>
+    
+    {{ form_start(form) }}
+    <div class="card-body p-4">
+        <!-- Titre -->
+        <div class="mb-4">
+            {{ form_label(form.title, 'Titre du cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            <div class="input-group">
+                {{ form_widget(form.title, {
+                    'attr': {
+                        'class': 'form-control' ~ (form.title.vars.errors|length ? ' is-invalid'),
+                        'placeholder': 'Ex: Apprendre Symfony 6'
+                    }
+                }) }}
+                <span class="input-group-text"><i class="fas fa-heading"></i></span>
+            </div>
+            <div class="invalid-feedback">
+                {{ form_errors(form.title) }}
+            </div>
+        </div>
+
+        <!-- Langue -->
+        <div class="mb-4">
+            {{ form_label(form.langue, 'Langue du cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            <div class="input-group">
+                {{ form_widget(form.langue, {
+                    'attr': {
+                        'class': 'form-select' ~ (form.langue.vars.errors|length ? ' is-invalid'),
+                        'data-placeholder': 'Sélectionnez une langue'
+                    }
+                }) }}
+                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+            </div>
+            <div class="invalid-feedback">
+                {{ form_errors(form.langue) }}
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.description, {
+                'attr': {
+                    'class': 'form-control' ~ (form.description.vars.errors|length ? ' is-invalid'),
+                    'placeholder': 'Décrivez le contenu du cours',
+                    'rows': 4
+                }
+            }) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Prix -->
+            <div class="col-md-6">
+                <div class="mb-4">
+                    {{ form_label(form.prix, 'Prix (TND)', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    <div class="input-group">
+                        {{ form_widget(form.prix, {
+                            'attr': {
+                                'class': 'form-control' ~ (form.prix.vars.errors|length ? ' is-invalid'),
+                                'placeholder': 'Ex: 50.500',
+                                'min': 0,
+                                'step': '0.001'
+                            }
+                        }) }}
+                        <span class="input-group-text">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.prix) }}
+                    </div>
+                    <small class="form-text text-muted">0.000 = Gratuit</small>
+                </div>
+            </div>
+
+            <!-- Image -->
+            <div class="col-md-6">
+                <div class="mb-4">
+                    {{ form_label(form.brochure, 'Image du cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    <div class="input-group">
+                        {{ form_widget(form.brochure, {
+                            'attr': {
+                                'class': 'form-control' ~ (form.brochure.vars.errors|length ? ' is-invalid'),
+                                'accept': 'image/*'
+                            }
+                        }) }}
+                        <span class="input-group-text"><i class="fas fa-image"></i></span>
+                    </div>
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.brochure) }}
+                    </div>
+                    <small class="form-text text-muted">Formats: JPG, PNG, WEBP (Max 2Mo)</small>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            {{ form_label(form.matiere, 'choisir un matiere', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            <div class="input-group">
+                {{ form_widget(form.matiere, {
+                    'attr': {
+                        'class': 'form-control' ~ (form.matiere.vars.errors|length ? ' is-invalid'),
+                        'placeholder': ''
+                    }
+                }) }}
+            </div>
+        <div class="mb-4">
+            {{ form_label(form.lienDePaiment, 'Lien de paiement du cours', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            <div class="input-group">
+                {{ form_widget(form.lienDePaiment, {
+                    'attr': {
+                        'class': 'form-control' ~ (form.lienDePaiment.vars.errors|length ? ' is-invalid'),
+                        'placeholder': 'Ex: https://sandbox.knct.me/CSxuTSEaT'
+                    }
+                }) }}
+            </div>
+            <div class="invalid-feedback">
+               {{ form_errors(form.lienDePaiment) }}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light py-3 text-center">
+        <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
+            <i class="fas fa-save me-2"></i>{{ button_label|default('Publier le cours') }}
+        </button>
+    </div>
+    {{ form_end(form) }}
+</div>
+
+<style>
+    .card {
+        border-radius: 1rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    .invalid-feedback {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #dc3545;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+    }
+    
+    .form-select {
+        background-position: right 1.5rem center;
+    }
+</style>

@@ -1,0 +1,49 @@
+<!-- Bouton de suppression -->
+<button class="btn btn-danger" onclick="showDeleteConfirmation({{ reponse.id }})">Delete</button>
+
+<!-- Modal de confirmation -->
+<div id="delete-modal-{{ reponse.id }}" class="delete-modal" style="display: none;">
+    <div class="modal-content">
+        <p>Are you sure you want to delete this response?</p>
+        <form method="post" action="{{ path('app_reponse_delete', {'id': reponse.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reponse.id) }}">
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <button type="button" class="btn btn-secondary" onclick="hideDeleteConfirmation({{ reponse.id }})">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<!-- CSS pour le modal -->
+<style>
+    .delete-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    .btn {
+        margin: 5px;
+    }
+</style>
+
+<!-- Script pour afficher/cacher le modal -->
+<script>
+    function showDeleteConfirmation(id) {
+        document.getElementById('delete-modal-' + id).style.display = 'flex';
+    }
+
+    function hideDeleteConfirmation(id) {
+        document.getElementById('delete-modal-' + id).style.display = 'none';
+    }
+</script>

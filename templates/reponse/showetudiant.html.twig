@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réponses de l'Étudiant{% endblock %}
+
+{% block body %}
+    <h2>Réponses de l'étudiant {{ userId }} pour l'évaluation "{{ evaluation.title }}"</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Text</th>
+                <th>Correcte</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reponse in reponses %}
+                <tr>
+                    <td>{{ reponse.id }}</td>
+                    <td>{{ reponse.text }}</td>
+                    <td>{{ reponse.isCorrect ? 'Oui' : 'Non' }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">Aucune réponse trouvée pour cet étudiant.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

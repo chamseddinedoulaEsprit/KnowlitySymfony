@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Event Registration{% endblock %}
+
+{% block body %}
+    {% if app.session.get('roles') is null %}
+        <script type="text/javascript">
+            window.location.href = "{{ path('app_login') }}";
+        </script>
+    {% endif %}
+    {% if app.session.get('deleted') ==1%}
+        <script type="text/javascript">
+            window.location.href = "{{ path('logout') }}";
+        </script>
+    {% endif %}
+    <h1>Edit EventRe gistration</h1>
+<br><br><br><br><br>
+    {{ include('event_registration/_user_form.html.twig', {'button_label': 'Update'}) }}
+
+
+<div class="main-button-gradient">
+        <a href="{{ path('app_events_my_registration') }}" >back to list</a>
+    </div>
+{% endblock %}

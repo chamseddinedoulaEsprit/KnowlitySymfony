@@ -1,0 +1,12 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Edit Chapitre{% endblock %}
+
+{% block body %}
+
+    {{ include('chapitre/_form1.html.twig', {'button_label': 'Update'}) }}
+
+    <a class="aclass" href="{{ path('app_cours', {'id': chapitre.cours.id}) }}">back to cours</a>
+
+    {{ include('chapitre/_delete_form.html.twig') }}
+{% endblock %}

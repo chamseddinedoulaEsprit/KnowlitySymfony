@@ -1,0 +1,40 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="mb-3">
+        {{ form_label(form.title, 'Titre de la question', {'class': 'form-label'}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.title) }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Énoncé de la question</label>
+        <div id="editor"></div>
+        {{ form_widget(form.enonce, {'attr': {'class': 'form-control', 'id': 'hidden-enonce', 'style': 'display: none;'}}) }}
+        {{ form_errors(form.enonce) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.point, 'Points', {'class': 'form-label'}) }}
+        {{ form_widget(form.point, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.point) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.ordreQuestion, 'Ordre', {'class': 'form-label'}) }}
+        {{ form_widget(form.ordreQuestion, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.ordreQuestion) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.programmingLanguage, 'Langage de programmation', {'class': 'form-label'}) }}
+        {{ form_widget(form.programmingLanguage, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.programmingLanguage) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.codeSnippet, 'Extrait de code', {'class': 'form-label'}) }}
+        {{ form_widget(form.codeSnippet, {'attr': {'class': 'form-control', 'rows': 6}}) }}
+        {{ form_errors(form.codeSnippet) }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

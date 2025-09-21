@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une Nouvelle Réponse{% endblock %}
+
+{% block stylesheets %}
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.net/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/newreponse.css') }}">
+
+    <style>
+        /* Style personnalisé pour le bouton Passer à la question suivante */
+        .btn-next-question {
+            background-color: #28a745; /* Vert vif */
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0px 4px 10px rgba(0, 128, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Effet au survol */
+        .btn-next-question:hover {
+            background-color: #218838; /* Vert plus foncé */
+            transform: translateY(-2px); /* Légère élévation */
+            box-shadow: 0px 6px 15px rgba(0, 128, 0, 0.5);
+        }
+
+        /* Icône plus grande */
+        .btn-next-question i {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="card shadow-lg p-4">
+            <!-- Titre -->
+            <h2 class="card-title text-center mb-3">Créer une Nouvelle Réponse</h2>
+            <p class="card-text text-center text-muted">
+                Nous sommes ravis de vous voir ajouter une nouvelle réponse. Chaque contribution est importante !
+            </p>
+
+            <!-- Formulaire -->
+            <div class="mt-4">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    <label for="question" class="form-label">Question</label>
+                    <p>{{ question }}</p>
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.text) }} <!-- Assurez-vous que "text" est le bon champ dans votre formulaire -->
+                </div>
+               
+            </div>
+
+            <!-- Bouton Retour -->
+            <div class="text-center mt-4">
+                <a href="{{ path('app_reponse_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+
+           
+            
+                
+            
+                <!-- Si aucune question suivante, afficher un message de fin -->
+                <div class="text-center mt-4">
+                    <p class="text-muted">Vous avez répondu à toutes les questions de l'évaluation.</p>
+                   
+                    <button type="submit" class="btn btn-success">
+    {% if nextQuestionId is not null %}  Passer à la question suivante <i class="fas fa-arrow-right"></i> {% else %}Terminer l'évaluation {% endif %}
+</button>
+ {{ form_end(form) }}
+                </div>
+           
+
+            <!-- Texte Motivationnel -->
+            <p class="text-center text-muted mt-3">
+                Continuez à apprendre et à répondre ! Vos efforts contribuent à une meilleure éducation pour tous.
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

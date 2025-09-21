@@ -1,0 +1,175 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Catalogue des Cours{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/chapitre1.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="display-5 fw-bold">Vos Cours</h1>
+        <a href="{{ path('app_cours_new', { 'id': 1 }) }}" class="btn btn-primary btn-lg shadow">
+            <i class="fas fa-plus me-2"></i>Créer un nouveau cours
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for cour in cours %}
+        <div class="col course-card d-none">
+            <div class="card h-100 shadow-lg">
+                <div class="card-header position-relative p-0 overflow-hidden" style="height: 180px;">
+                    <img src="{{ asset('uploads/brochures/' ~ cour.urlImage) }}" 
+                         class="img-fluid h-100 w-100 object-fit-cover"
+                         alt="{{ cour.title }}">
+                    <div class="image-overlay"></div>
+                    <span class="badge bg-primary position-absolute top-0 start-0 m-3">
+                        {{ cour.matiere.titre }}
+                    </span>
+                </div>
+                
+                <div class="card-body position-relative pt-4">
+                    <div class="course-avatar position-absolute top-0 start-50 translate-middle">
+                         <img src="{{ asset('uploads/' ~ cour.enseignant.image) }}"  
+                                 class="rounded-circle shadow-lg border border-3 border-white" 
+                                 width="80" 
+                                 height="80" 
+                                 alt="Formateur">
+                    </div>
+                    <h3 class="h5 fw-bold mb-3 text-center">{{ cour.title }}</h3>
+                    
+                    <div class="d-flex justify-content-center gap-4 mb-3">
+                        <div class="text-center">
+                            <div class="h4 text-primary mb-1">{{ cour.nbChapitres }}</div>
+                            <small class="text-muted">Chapitres</small>
+                        </div>
+                        <div class="text-center">
+                            <div class="h4 text-primary mb-1">{{ cour.NbEtudiants }}</div>
+                            <small class="text-muted">Apprenants</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 d-flex justify-content-center pb-4">
+                    <a href="{{ path('app_cours', {'id': cour.id}) }}" 
+                       class="btn btn-outline-primary btn-hover">
+                        <i class="fas fa-eye me-2"></i>Voir le cours
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-5">
+                <i class="fas fa-book-open fa-3x text-muted mb-4"></i>
+                <h4 class="alert-heading">Aucun cours disponible</h4>
+                <p class="mb-0">Commencez par créer un nouveau cours</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-4">
+        <button id="loadMoreCourses" class="btn btn-link">
+            <i class="fas fa-arrow-down"></i> Afficher plus
+        </button>
+    </div>
+</div>
+
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+    const courses = document.querySelectorAll(".course-card");
+    const loadMoreButton = document.getElementById("loadMoreCourses");
+    let visibleCourses = 6;
+
+    // Afficher les premiers cours
+    courses.forEach((course, index) => {
+        if (index < visibleCourses) {
+            course.classList.remove("d-none");
+        }
+    });
+
+    // Cacher le bouton initialement si tous les cours sont visibles
+    if (visibleCourses >= courses.length) {
+        loadMoreButton.style.display = "none";
+    }
+
+    // Gérer le clic sur "Afficher plus"
+    loadMoreButton.addEventListener("click", () => {
+        visibleCourses += 6;
+        courses.forEach((course, index) => {
+            if (index < visibleCourses) {
+                course.classList.remove("d-none");
+            }
+        });
+
+        // Cacher le bouton si tous les cours sont visibles
+        if (visibleCourses >= courses.length) {
+            loadMoreButton.style.display = "none";
+        }
+    });
+});
+</script>
+
+<style>
+.text-center {
+      margin-top: 41px;
+}
+.col {
+    margin-bottom: 10px;
+}
+.text-muted {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.course-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.15) !important;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding-left: 39px;
+    padding-top: 10px;
+    font-family: ui-serif;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
+}
+
+.course-avatar {
+    z-index: 2;
+    margin-top: -40px;
+}
+
+.object-fit-cover {
+    object-fit: cover;
+    object-position: center;
+}
+
+.btn-hover {
+    transition: all 0.3s ease;
+}
+
+.btn-hover:hover {
+    background-color: #0d6efd;
+    color: white !important;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}UserQuizSelection{% endblock %}
+
+{% block body %}
+    <h1>UserQuizSelection</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_quiz_selection.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ user_quiz_selection.username }}</td>
+            </tr>
+            <tr>
+                <th>Quiz</th>
+                <td>{{ user_quiz_selection.quiz.titre }}</td>
+            </tr>
+            <tr>
+                <th>Selection Date</th>
+                <td>{{ user_quiz_selection.selectionDate|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Responses</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Response</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in user_quiz_selection.userQuizResults %}
+                <tr>
+                    <td>{{ result.quizQuestion.texte }}</td>
+                    <td>{{ result.response }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">No responses available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_quiz_selection_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_quiz_selection_edit', {'id': user_quiz_selection.id}) }}">edit</a>
+
+    {{ include('user_quiz_selection/_delete_form.html.twig') }}
+{% endblock %}

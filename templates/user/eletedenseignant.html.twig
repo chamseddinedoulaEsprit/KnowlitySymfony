@@ -1,0 +1,50 @@
+{% extends 'base2.html.twig' %}
+{% block body%}
+<h2 class="text-center ">Liste des Enseignant Suprimés</h2>
+
+
+
+  <br>
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Numero Telephone</th>
+                    <th>Localisation</th>
+                    <th>Email</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+             {% for us in user %}
+                <tr>
+<td>{{ us.nom }}</td>
+<td>{{ us.prenom }}</td>
+<td>{{ us.getNumTelephone() }}</td>
+<td>{{ us.localisation }}</td>
+<td>{{ us.email }}</td>
+<td>   <img class="rounded-circle me-lg-2" src="{{ asset('uploads/' ~ us.getImage()) }}" alt="Image"></td>
+
+<td>
+              <a class="" href="/user/back/{{us.id}}/restaurenseignant"><i class="bi bi-arrow-repeat" style="font-size: 20px; color: blue;"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+<a class="" href="/user/back/{{ us.id }}/remove/enseignant"><i class="bi bi-trash" style="font-size: 20px; color: red;"></i></a></td>
+{%endfor%}
+
+</table>
+
+
+
+
+<style>
+.rounded-circle {
+    width: 60px;
+    height: 6%;
+    border-radius: 50%; /* Cela rend l'image circulaire */
+    object-fit: cover;  /* Cela permet à l'image de garder une bonne proportion sans déformer l'image */
+}
+
+
+</style>
+{% endblock%}

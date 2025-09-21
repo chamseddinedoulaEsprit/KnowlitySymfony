@@ -1,0 +1,18 @@
+{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+    {# Text Field #}
+    <div class="form-group">
+        {{ form_label(form.texte, 'Text', {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_widget(form.texte, {'attr': {'class': 'form-control', 'placeholder': 'Enter the response text'}}) }}
+    </div>
+
+    {# Is Correct Checkbox #}
+    <div class="form-group form-check">
+        {{ form_widget(form.estCorrecte, {'attr': {'class': 'form-check-input'}}) }}
+        {{ form_label(form.estCorrecte, 'Is Correct', {'label_attr': {'class': 'form-check-label'}}) }}
+    </div>
+
+    {# Submit Button #}
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+
+{{ form_end(form) }}

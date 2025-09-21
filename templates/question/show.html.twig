@@ -1,0 +1,180 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Détails de la Question{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/template.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/events.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        .question-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .question-header {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .question-content {
+            padding: 1.5rem;
+        }
+        .question-title {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6c757d;
+        }
+        .meta-item i {
+            color: #007bff;
+        }
+        .code-section {
+            background: #272822;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        .language-badge {
+            background: #3c3c3c;
+            color: #fff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+        .action-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .enonce-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Détails de la Question</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_evaluation_showenseignant', {'id': question.evaluation.id}) }}">
+                                    <i class="fas fa-arrow-left"></i> Retour à l'évaluation
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">Question</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="question-card">
+                    <div class="question-header">
+                        <h2 class="question-title">
+                            <i class="fas fa-question-circle"></i>
+                            {{ question.title }}
+                        </h2>
+                        <div class="question-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>{{ question.point }} points</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-sort-numeric-up"></i>
+                                <span>Question {{ question.ordreQuestion }}</span>
+                            </div>
+                            {% if question.programmingLanguage %}
+                            <div class="meta-item">
+                                <i class="fas fa-code"></i>
+                                <span>{{ question.programmingLanguage|upper }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="question-content">
+                        <div class="enonce-section">
+                            <h3 class="mb-3">
+                                <i class="fas fa-file-alt"></i> Énoncé de la question
+                            </h3>
+                            <div class="enonce-content">
+                                {{ question.enonce|nl2br }}
+                            </div>
+                        </div>
+
+                        {% if question.codeSnippet %}
+                        <div class="code-section">
+                            <div class="code-header">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-code"></i> Extrait de code
+                                </h3>
+                                <span class="language-badge">
+                                    {{ question.programmingLanguage|upper }}
+                                </span>
+                            </div>
+                            <pre><code class="language-{{ question.programmingLanguage }}">{{ question.codeSnippet }}</code></pre>
+                        </div>
+                        {% endif %}
+
+                        <div class="action-buttons">
+                            <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <a href="{{ path('app_question_index', {'evaluationId': question.evaluation.id}) }}" class="btn btn-secondary">
+                                <i class="fas fa-list"></i> Liste des questions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+{% endblock %}

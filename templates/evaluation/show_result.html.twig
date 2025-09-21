@@ -1,0 +1,179 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .result-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #0056b3 0%, #007bff 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .inappropriate-content-alert {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+
+        .score-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .score-display.zero {
+            color: #dc3545;
+        }
+
+        .score-display.normal {
+            color: #28a745;
+        }
+
+        .warning-icon {
+            font-size: 2rem;
+            color: #ffc107;
+            margin-right: 1rem;
+        }
+
+        .response-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #007bff;
+        }
+
+        .question-item.inappropriate {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .feedback-box {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            transform: translateX(-5px);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="result-container">
+        <div class="result-header">
+            <h1>{{ evaluation.title }}</h1>
+            {% if submitTime %}
+                <p>Date de soumission : {{ submitTime|date('d/m/Y H:i') }}</p>
+            {% endif %}
+        </div>
+
+        {% if hasInappropriateContent %}
+            <div class="inappropriate-content-alert">
+                <h3><i class="fas fa-exclamation-triangle"></i> Contenu Inapproprié Détecté</h3>
+                <p>Votre réponse contient du contenu inapproprié ou des gros mots. Par conséquent :</p>
+                <ul>
+                    <li>Votre note a été automatiquement fixée à 0</li>
+                    <li>Cet incident a été signalé à l'enseignant</li>
+                    <li>Des sanctions disciplinaires peuvent être appliquées</li>
+                </ul>
+                <p class="mb-0">Veuillez maintenir un langage professionnel et approprié dans vos réponses.</p>
+            </div>
+        {% endif %}
+
+        <div class="score-section">
+            <h2 class="text-center">Votre Score</h2>
+            <div class="score-display {% if hasInappropriateContent or totalScore == 0 %}zero{% else %}normal{% endif %}">
+                {{ totalScore }}/{{ maxScore }}
+            </div>
+            {% if totalScore >= maxScore * 0.8 %}
+                <div class="text-center">
+                    <i class="fas fa-trophy" style="color: #ffd700; font-size: 2rem;"></i>
+                    <p>Excellent travail !</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="response-details">
+            <h3>Détails des Réponses</h3>
+            {% for reponse in reponses %}
+                <div class="question-item {% if reponse.note == 0 and reponse.commentaire starts with 'AVERTISSEMENT' %}inappropriate{% endif %}">
+                    <h4>Question {{ loop.index }}</h4>
+                    <p><strong>Votre réponse :</strong></p>
+                    <div class="response-text">
+                        {{ reponse.text }}
+                    </div>
+                    
+                    {% if reponse.note == 0 and reponse.commentaire starts with 'AVERTISSEMENT' %}
+                        <div class="feedback-box text-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Cette réponse contient du contenu inapproprié
+                        </div>
+                    {% endif %}
+
+                    {% if reponse.commentaire %}
+                        <div class="feedback-box">
+                            <h5>Commentaire de l'enseignant :</h5>
+                            {{ reponse.commentaire }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ path('app_evaluation_indexetudiant') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+{% endblock %}

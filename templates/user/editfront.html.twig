@@ -1,0 +1,139 @@
+
+  {% extends 'base.html.twig' %}
+ 
+{%   block body  %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    
+   
+     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            background: white;
+        }
+
+        .container1 {
+            border: 2px solid black;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: blue;
+        }
+
+        .profile-button {
+            background: blue;
+            box-shadow: none;
+            border: none;
+        }
+
+        .profile-button:hover,
+        .profile-button:focus,
+        .profile-button:active {
+            background: black;
+            box-shadow: none;
+        }
+
+        .back:hover {
+            color: black;
+            cursor: pointer;
+        }
+        .nav-item.nav-link[href="{{ path('logout') }}"] {
+    color: black !important;  
+}
+
+.nav-item.nav-link[href="{{ path('logout') }}"]:hover {
+    color: black !important;  
+}
+ 
+    
+
+    </style>
+</head>
+<body>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+    <div class="container1 container rounded bg-white mt-5">
+        <div class="row">
+            <div class="col-md-4 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <img class="rounded-circle mt-5" src="http://localhost/demo/src/main/resources/images/{{ app.session.get('image') }}" alt="Image">
+                    <span class="font-weight-bold"> {{app.session.get('user_nom')}}  {{app.session.get('user_prenom')}} </span>
+                    <span class="text-black-50">{{app.session.get('email')}}</span>
+                    <span>{{app.session.get('localisation')}}</span>
+                </div>
+            </div>
+        <div class="col-md-8">
+    <div class="p-3 py-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+      
+            <div class="d-flex flex-row align-items-center back">
+                <i class="fa fa-long-arrow-left mr-1 mb-1"></i>
+                  <a href="/user/front">
+                <h6>Back to home</h6>
+                </a>
+            </div>
+             <a href="/resetfrontpas">
+            <h6 class="text-right">Reset Password</h6>   </a>
+        </div>
+        {{ form_start(form) }}
+        <div class="row mt-2">
+            <div class="col-md-6">{{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'First Name'}}) }}
+            {{ form_errors(form.nom, {'attr': {'class': 'form-control border-white'}}) }}</div>
+            <div class="col-md-6">{{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Last Name'}}) }}
+            {{ form_errors(form.prenom, {'attr': {'class': 'form-control border-white'}}) }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">{{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+            {{ form_errors(form.email, {'attr': {'class': 'form-control border-white'}}) }}</div>
+            <div class="col-md-6">{{ form_widget(form.date_naissance, {'attr': {'class': 'form-control', 'placeholder': 'Phone Number'}}) }}
+            {{ form_errors(form.date_naissance, {'attr': {'class': 'form-control border-white'}}) }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">{{ form_widget(form.image, {'attr': {'class': 'form-control', 'placeholder': 'Address'}}) }}
+            {{ form_errors(form.image, {'attr': {'class': 'form-control border-white'}}) }}</div>
+            <div class="col-md-6">{{ form_widget(form.localisation, {'attr': {'class': 'form-control', 'placeholder': 'Country'}}) }}
+            {{ form_errors(form.localisation, {'attr': {'class': 'form-control border-white'}}) }}</div>
+        </div>
+      
+        <div class="mt-5 text-right">
+            {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary profile-button'}}) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+        </div>
+    </div>
+    
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+{%  endblock  %}
+
+{%  block reset    %}
+
+
+{%  endblock  %}

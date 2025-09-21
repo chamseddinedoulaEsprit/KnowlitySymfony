@@ -1,0 +1,10 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}New Chapitre{% endblock %}
+
+{% block body %}
+    
+    {{ include('chapitre/_form.html.twig') }}
+
+    <a href="{{ path('app_cours',{'id': chapitre.cours.id}) }}"class="btn btn-block bg-gradient-secondary btn-flat">back to Course</a>
+{% endblock %}

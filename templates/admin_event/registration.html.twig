@@ -1,0 +1,59 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}EventRegistration index{% endblock %}
+
+
+{% block stylesheet %}
+     <link rel="stylesheet" href="{{ asset('assets/css/events.css') }}">
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container">
+<div class="row">
+    {% for event_registration in event_registrations %}
+    <div class="col-lg-4">
+        <div class="card card-margin">
+            <div class="card-header no-border">
+                <div class="card-title">
+                <h5 class="{{ event_registration.status|lower }}">
+                    {{ event_registration.status }}
+                </h5>
+                </div>
+            </div>
+              <div class="card-body pt-0">
+                <div class="widget-49">
+                    <div class="widget-49-title-wrapper">
+                        <div class="widget-49-date-primary">
+                            <span class="widget-49-date-day">
+                                {{ event_registration.registrationDate ? event_registration.registrationDate|date('d') : '' }}
+                            </span>
+                            <span class="widget-49-date-month">
+                                {{ event_registration.registrationDate ? event_registration.registrationDate|date('M') : '' }}
+                            </span>
+                        </div>
+                        <div class="widget-49-meeting-info">
+                            <span class="widget-49-pro-title">{{ event_registration.getEvent.getTitle }}</span>
+                        </div>
+                    </div>
+                    <ol class="widget-49-meeting-points">
+                        <li class="widget-49-meeting-item"><span>{{ event_registration.getUser.getNom }}</span></li>
+                        <li class="widget-49-meeting-item"><span>{{ event_registration.getEvent.getStartDate|date('Y-m-d H:i') }}</span></li>
+                        <li class="widget-49-meeting-item"><span>{{ event_registration.getEvent.getType }}</span></li>
+                    </ol>
+                    <div class="widget-49-meeting-action">
+                        <a href="{{ path('app_event_registration_show' ,{'id': event_registration.id}) }}" class="btn btn-sm btn-flash-border-primary">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+            <h1>no records found</h1>
+    {% endfor %}
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Quiz Details{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-white">
+            <h1 class="h3 mb-0"><i class="fas fa-poll me-2"></i>Quiz Details</h1>
+        </div>
+        
+        <div class="card-body">
+            <!-- Quiz Details -->
+            <div class="mb-5">
+                <h3 class="mb-4 text-primary"><i class="fas fa-info-circle me-2"></i>Quiz Information</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <strong class="text-muted">Titre:</strong>
+                            <p class="h5 text-dark">{{ quiz.titre }}</p>
+                        </div>
+                        <div class="mb-4">
+                            <strong class="text-muted">Description:</strong>
+                            <p class="text-muted">{{ quiz.description }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <strong class="text-muted">Max Score:</strong>
+                            <p class="h5 text-dark">{{ quiz.scoreMax }}</p>
+                        </div>
+                        <div class="mb-4">
+                            <strong class="text-muted">Deadline:</strong>
+                            <p class="text-muted">{{ quiz.dateLimite ? quiz.dateLimite|date('F j, Y \\a\\t g:i A') : 'No deadline' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Actions -->
+            <div class="d-flex justify-content-start gap-3 mb-5">
+                <a href="{{ path('app_quiz_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+                <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning">
+                    <i class="fas fa-edit me-2"></i>Edit Quiz
+                </a>
+                {{ include('quiz/_delete_form.html.twig') }}
+            </div>
+
+            <!-- Related Questions -->
+            <h3 class="mb-4 text-primary"><i class="fas fa-question-circle me-2"></i>Related Questions</h3>
+            {% if quiz.questions is not empty %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Question</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in quiz.questions %}
+                                <tr>
+                                    <td>{{ question.texte }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ question.type }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('app_question_show', {'id': question.id}) }}" 
+                                           class="btn btn-sm btn-primary me-2">
+                                            <i class="fas fa-eye"></i> Show
+                                        </a>
+                                        <a href="{{ path('app_question_edit', {'id': question.id}) }}" 
+                                           class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No questions found for this quiz.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Custom Styles */
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .card-header.bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff, #00a8ff);
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.75em;
+        border-radius: 8px;
+    }
+    .alert {
+        border-radius: 10px;
+    }
+    .btn {
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .text-muted {
+        color: #6c757d !important;
+    }
+    .text-dark {
+        color: #343a40 !important;
+    }
+</style>
+{% endblock %}

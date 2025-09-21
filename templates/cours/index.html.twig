@@ -1,0 +1,440 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue des Cours{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+    {% if app.session.get('roles') is null or app.session.get('deleted') == 1 %}
+        <script>
+            window.location.href = "{{ app.session.get('deleted') == 1 ? path('logout') : path('app_login') }}";
+        </script>
+    {% endif %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/chapitre1.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <!-- Conteneur du guide -->
+    <div data-controller="guide" class="guide-container">
+        <div data-guide-target="tooltip" class="guide-tooltip d-none">
+            <div class="guide-content" data-guide-target="content"></div>
+            <div class="guide-actions">
+                <button data-action="click->guide#previous" class="btn btn-sm btn-secondary">Précédent</button>
+                <button data-action="click->guide#next" class="btn btn-sm btn-primary">Suivant</button>
+                <button data-action="click->guide#close" class="btn btn-sm btn-danger">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="display-4 mb-4 text-center fw-bold">Explorez Nos Cours</h1>
+
+    <!-- Filtres et recherche avec attributs pour le guide -->
+    <div class="card shadow-lg mb-5 border-0 bg-light" data-controller="search" data-guide-step="search-step">
+        <div class="card-body p-4">
+            <form action="{{ path('app_cours_index2') }}" 
+                  method="get" 
+                  class="row g-3 align-items-center" 
+                  data-search-target="form" 
+                  data-action="submit->search#submitForm">
+                <div class="col-md-5 position-relative">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control ps-5" 
+                           placeholder="Rechercher un cours..." 
+                           value="{{ app.request.query.get('search') }}" 
+                           data-search-target="input" 
+                           data-guide-step="search-input">
+                </div>
+
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-filter text-muted"></i></span>
+                        <select name="matiere" 
+                                class="form-select form-select-lg shadow-sm border-start-0" 
+                                data-search-target="select" 
+                                data-guide-step="filter-select">
+                            <option value="">Toutes les matières</option>
+                            {% for matiere in matieres %}
+                                <option value="{{ matiere.id }}" {{ app.request.query.get('matiere') == matiere.id ? 'selected' : '' }}>
+                                    {{ matiere.titre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-lg hover-scale">
+                        <i class="fas fa-sliders-h me-2"></i>Appliquer
+                    </button>
+                    <a href="{{ path('app_cours_index2') }}" 
+                       class="btn btn-light btn-lg border hover-scale" 
+                       title="Réinitialiser" 
+                       data-action="click->search#resetFilters" 
+                       data-reset-url="{{ path('app_cours_index2') }}">
+                        <i class="fas fa-undo text-secondary"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- En-têtes de tri avec attribut pour le guide -->
+    <div class="d-flex justify-content-end mb-4" data-guide-step="sort-buttons">
+        <div class="btn-group shadow-sm rounded-pill overflow-hidden">
+            {% set current_sort = current_sort|default({'field': 'c.title', 'direction': 'asc'}) %}
+            
+            <a href="{{ path('app_cours_index2', app.request.query.all|merge({'sort_by': 'c.title', 'sort_order': (current_sort.field == 'c.title' and current_sort.direction == 'asc') ? 'desc' : 'asc'})) }}" 
+               class="btn btn-sort {{ current_sort.field == 'c.title' ? 'active' : '' }}">
+                <i class="fas fa-font me-2"></i>Titre
+                <i class="fas fa-sort-{{ current_sort.field == 'c.title' ? current_sort.direction|lower : 'asc' }} ms-2"></i>
+            </a>
+            
+            <a href="{{ path('app_cours_index2', app.request.query.all|merge({'sort_by': 'nbChapitres', 'sort_order': (current_sort.field == 'nbChapitres' and current_sort.direction == 'asc') ? 'desc' : 'asc'})) }}" 
+               class="btn btn-sort {{ current_sort.field == 'nbChapitres' ? 'active' : '' }}">
+                <i class="fas fa-list-ol me-2"></i>Chapitres
+                <i class="fas fa-sort-{{ current_sort.field == 'nbChapitres' ? current_sort.direction|lower : 'asc' }} ms-2"></i>
+            </a>
+            
+            <a href="{{ path('app_cours_index2', app.request.query.all|merge({'sort_by': 'NbEtudiants', 'sort_order': (current_sort.field == 'NbEtudiants' and current_sort.direction == 'asc') ? 'desc' : 'asc'})) }}" 
+               class="btn btn-sort {{ current_sort.field == 'NbEtudiants' ? 'active' : '' }}">
+                <i class="fas fa-users me-2"></i>Étudiants
+                <i class="fas fa-sort-{{ current_sort.field == 'NbEtudiants' ? current_sort.direction|lower : 'asc' }} ms-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Grille de cours avec attribut pour le guide -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" data-guide-step="course-grid">
+        {% for cour in pagination %}
+            <div class="col course-card">
+                <div class="card h-100 shadow-lg border-0 overflow-hidden transform-on-hover">
+                    <div class="card-header position-relative p-0 overflow-hidden" style="height: 180px;">
+                        <img src="http://localhost/demo/Uploads/{{ cour.urlImage}}" 
+                             class="card-img-top h-100 object-fit-cover" 
+                             alt="{{ cour.title }}">
+                        <div class="image-overlay">
+                            <span class="badge bg-primary position-absolute top-0 end-0 m-3 shadow-sm">
+                                {{ cour.enseignant.nom }} {{ cour.enseignant.prenom }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body position-relative pt-4">
+                        <div class="course-avatar position-absolute top-0 start-50 translate-middle" style="top: -21px;">
+                            <img src="{{ asset('uploads/' ~ cour.enseignant.image) }}"  
+                                 class="rounded-circle shadow-lg border border-3 border-white" 
+                                 width="80" 
+                                 height="80" 
+                                 alt="Formateur">
+                        </div>
+                        <h3 class="h5 fw-bold mb-3 text-center">{{ cour.title }}</h3>
+                        
+                        <div class="d-flex justify-content-center gap-3 mb-3">
+                            <div class="text-center">
+                                <div class="h4 mb-0 text-primary">{{ cour.nbChapitres }}</div>
+                                <small class="text-muted">Chapitres</small>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="text-center">
+                                <div class="h4 mb-0 text-primary">{{ cour.NbEtudiants }}</div>
+                                <small class="text-muted">Apprenants</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-4">
+                        <a href="{{ path('app_cours_show', {'id': cour.id}) }}" 
+                           class="btn btn-outline-primary w-100 btn-hover">
+                            <i class="fas fa-book-open me-2"></i>Voir le cours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info shadow-lg text-center py-4">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h4 class="alert-heading">Aucun cours disponible</h4>
+                    <p class="mb-0">Commencez par créer un nouveau cours !</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-5 d-flex justify-content-center">
+        {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
+            'align': 'center',
+            'size': 'large',
+            'rounded': true,
+        }) }}
+    </div>
+</div>
+
+<style>
+    .navigation {
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .page-link {
+        color: #0d6efd;
+    }
+
+    .transform-on-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .transform-on-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
+    }
+    
+    .image-overlay {
+        position: absolute;
+        color: white;    
+        top: 0;
+        left: 0;
+        right: 0;
+        padding-left: 39px;
+        padding-top: 10px;
+        font-family: ui-serif;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
+    }
+    
+    .course-avatar {
+        z-index: 2;
+        margin-top: -40px;
+    }
+    
+    .object-fit-cover {
+        object-fit: cover;
+        object-position: center;
+    }
+    
+    .btn-hover {
+        background-color: rgb(123, 160, 216);
+        color: black !important;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-hover:hover {
+        background-color: #0d6efd;
+        color: white !important;
+    }
+    
+    .card-body {
+        line-height: 1.7;
+    }
+    
+    .alert p {
+        margin-bottom: 0.5rem;
+    }
+    
+    .col {
+        margin-bottom: 10px;
+    }
+    
+    .text-center {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    .pagination {
+        gap: 0.5rem;
+    }
+    
+    .page-link {
+        border-radius: 0.75rem !important;
+        min-width: 40px;
+        text-align: center;
+        transition: all 0.2s ease;
+        border: 1px solid #dee2e6;
+    }
+    
+    .page-link:hover {
+        background-color: #e9ecef;
+        transform: translateY(-1px);
+    }
+    
+    .page-item.active .page-link {
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(13, 110, 253, 0.2);
+    }
+
+    /* Styles améliorés pour le tri */
+    .btn-sort {
+        background: #fff;
+        color: #6c757d;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-sort:hover {
+        background: #f8f9fa;
+        color: #0d6efd;
+    }
+    .btn-danger {margin-top :0 !important;
+}
+    
+    .btn-sort.active {
+        background: #0d6efd !important;
+        color: white !important;
+        border-color: #0d6efd;
+    }
+
+    /* Améliorations pour la recherche/filtre */
+    .hover-scale {
+        transition: transform 0.2s ease;
+    }
+    
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+    
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    }
+
+    /* Styles améliorés pour le guide */
+    .guide-tooltip {
+        position: absolute;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        max-width: 410px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        animation: fadeIn 0.3s ease-in-out;
+        overflow: hidden;
+    }
+
+    .guide-tooltip.d-none {
+        display: none;
+    }
+
+    .guide-tooltip::before {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: #ffffff;
+        transform: rotate(45deg);
+        z-index: -1;
+        top: var(--arrow-top, -6px);
+        bottom: var(--arrow-bottom, auto);
+        left: 50%;
+        margin-left: -6px;
+        box-shadow: var(--arrow-shadow, -2px -2px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    .guide-content {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    .guide-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .guide-actions .btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .guide-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .guide-actions .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .guide-actions .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .guide-actions .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .guide-highlight {
+        position: relative;
+        z-index: 999;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2);
+        border-radius: 8px;
+        animation: pulse 1.5s infinite;
+    }
+
+    /* Animation d'entrée */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animation de surbrillance */
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2); }
+        50% { box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.6), 0 0 25px rgba(13, 110, 253, 0.3); }
+        100% { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .btn-sort {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-control, .form-select {
+            font-size: 1rem !important;
+        }
+        
+        .btn-group {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .guide-tooltip {
+            max-width: 280px;
+            padding: 15px;
+        }
+        
+        .guide-content {
+            font-size: 1rem;
+        }
+        
+        .guide-actions .btn {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+{% endblock %}

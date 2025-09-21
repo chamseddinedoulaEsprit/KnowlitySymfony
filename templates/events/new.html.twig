@@ -1,0 +1,27 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}New Event{% endblock %}
+{% block stylesheet %}
+
+
+{% if app.session.get('roles') is not same as('Enseignant') %}
+    <script type="text/javascript">
+        window.location.href = "{{ path('app_login') }}";
+    </script>
+{% endif %}
+
+
+{% if app.session.get('deleted') == 1 %}
+    <script type="text/javascript">
+        window.location.href = "{{ path('logout') }}";
+    </script>
+{% endif %}
+
+
+
+    <link rel="stylesheet" href="{{ asset('assets/css/event_form.css') }}">
+{% endblock %}
+{% block body %}
+
+    {{ include('events/_form.html.twig') }}
+{% endblock %}

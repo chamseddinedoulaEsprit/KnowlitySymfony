@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des évaluations{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .evaluation-details {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .stats-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .status-corrected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .btn-group .btn {
+            margin-right: 0.25rem;
+        }
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="evaluation-details">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Liste des évaluations</h1>
+            <a href="{{ path('app_evaluation_newenseignant', {'coursId': coursId}) }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouvelle évaluation
+            </a>
+        </div>
+
+        {% if evaluations is empty %}
+            <div class="alert alert-info">
+                Aucune évaluation n'a été créée pour ce cours.
+            </div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Date de création</th>
+                            <th>Date limite</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for evaluation in evaluations %}
+                            <tr>
+                                <td>{{ evaluation.title }}</td>
+                                <td>{{ evaluation.description|slice(0, 100) }}{% if evaluation.description|length > 100 %}...{% endif %}</td>
+                                <td>{{ evaluation.createAt|date('d/m/Y') }}</td>
+                                <td>{{ evaluation.deadline|date('d/m/Y') }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ path('app_evaluation_detailsenseignant', {'id': evaluation.id}) }}" class="btn btn-sm btn-info" title="Voir les détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_evaluation_student_list', {'evaluationId': evaluation.id}) }}" class="btn btn-sm btn-primary" title="Liste des étudiants">
+                                            <i class="fas fa-users"></i>
+                                        </a>
+                                        <a href="{{ path('app_evaluation_editenseignant', {'id': evaluation.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% if evaluation.reponses is not empty %}
+                                            <a href="{{ path('app_evaluation_correct', {'id': evaluation.id}) }}" 
+                                               class="btn btn-sm btn-success" title="Corriger">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        {% endif %}
+                                        <a href="{{ path('app_evaluation_statistics', {'id': evaluation.id}) }}" 
+                                           class="btn btn-sm btn-primary" title="Statistiques">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        {{ include('evaluation/_delete_form.html.twig') }}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{{ path('app_evaluation_showenseignantremove', {'id': coursId}) }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour au cours
+            </a>
+        </div>
+    </div>
+
+    {% if app.session.flashBag.has('success') %}
+        <div class="alert alert-success">
+            {{ app.session.flashBag.get('success')[0] }}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% if blogs|length == 0 %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-blog fa-4x text-muted mb-3"></i>
+            <h3>Aucun blog pour le moment</h3>
+            <p class="text-muted">Soyez le premier à créer un article !</p>
+            <a href="{{ path('app_blog_new') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-plus mr-2"></i>Créer un article
+            </a>
+        </div>
+    </div>
+{% else %}
+    {% for blog in blogs %}
+        <div class="card mb-4 blog-card">
+            <div class="row no-gutters">
+                <!-- Image du blog -->
+                <div class="col-md-4 blog-image-container">
+                    {% if blog.blogImage %}
+                        <img src="{{ asset(blog.blogImage) }}" class="card-img" alt="{{ blog.title }}">
+                    {% else %}
+                        <div class="blog-image-placeholder d-flex align-items-center justify-content-center">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- Contenu du blog -->
+                <div class="col-md-8">
+                    <div class="card-body d-flex flex-column h-100">
+                        <div>
+                            <div class="blog-meta text-muted mb-2">
+                                <small>
+                                    <i class="fas fa-calendar-alt mr-2"></i>{{ blog.createdAt|date('d/m/Y H:i') }}
+                                </small>
+                            </div>
+                            <h5 class="card-title">{{ blog.title }}</h5>
+                            <p class="card-text">{{ blog.content|slice(0, 200) }}{% if blog.content|length > 200 %}...{% endif %}</p>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="{{ path('app_blog_show', {'id': blog.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-eye mr-2"></i>Lire la suite
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="navigation">
+        {{ knp_pagination_render(blogs) }}
+    </div>
+{% endif %}

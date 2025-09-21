@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chapitre - {{ chapitre.title }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-light text-white d-flex justify-content-between align-items-center py-3">
+            <h2 class="h4 mb-0">{{ chapitre.title }}</h2>
+            <span class="badge bg-primary text-primary fs-6">Chapitre #{{ chapitre.chapOrder }}</span>
+        </div>
+
+        <div class="card-body">
+            <dl class="mb-0">
+                <!-- Titre -->
+                <div class="row mb-3">
+                    <dt class="col-sm-3 text-muted mb-2 mb-sm-0">Titre</dt>
+                    <dd class="col-sm-9 fs-5">{{ chapitre.title }}</dd>
+                </div>
+
+                <!-- Ordre du chapitre -->
+                <div class="row mb-3">
+                    <dt class="col-sm-3 text-muted mb-2 mb-sm-0">Ordre du chapitre</dt>
+                    <dd class="col-sm-9">{{ chapitre.chapOrder }}</dd>
+                </div>
+
+                <!-- Durée estimée -->
+                <div class="row mb-3">
+                    <dt class="col-sm-3 text-muted mb-2 mb-sm-0">Durée estimée</dt>
+                    <dd class="col-sm-9">{{ chapitre.getDureeEstimee() }} heures</dd>
+                </div>
+
+                <!-- Nombre de vues -->
+                <div class="row mb-3">
+                    <dt class="col-sm-3 text-muted mb-2 mb-sm-0">Nombre de vues</dt>
+                    <dd class="col-sm-9">{{ chapitre.getNbrVues() }}</dd>
+                </div>
+
+                <!-- Contenu (PDF) -->
+                <div class="row mb-3">
+                    <dt class="col-sm-3 text-muted mb-2 mb-sm-0">Contenu</dt>
+                    <div class="col-md-6">
+                    <div class="pdf-preview">
+                        <h5 class="text-muted mb-3">Contenu</h5>
+                        <div class="border rounded-3 p-3 bg-light">
+                            <div class="d-flex align-items-center gap-3">
+                                <a href="{{ asset('uploads/brochures/' ~ chapitre.contenu) }}" 
+                                   class="btn btn-primary d-flex align-items-center"
+                                   target="_blank"
+                                   download>
+                                    <i class="fas fa-file-pdf me-2"></i>
+                                    Télécharger PDF
+                                </a>
+                                <a href="{{ asset('uploads/brochures/' ~ chapitre.contenu) }}" 
+                                   class="btn btn-outline-secondary"
+                                   target="_blank">
+                                    <i class="fas fa-external-link-alt me-2"></i>
+                                    Ouvrir
+                                </a>
+                            </div>
+                            <iframe src="{{ asset('uploads/brochures/' ~ chapitre.contenu) }}#toolbar=0" 
+                                    class="w-100 mt-3"
+                                    style="height: 300px; border: none;"
+                                    title="Aperçu PDF">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+           
+                </div>
+
+                <!-- Cours associé -->
+                <div class="row mb-3">
+                    <dt class="col-sm-3 text-muted mb-2 mb-sm-0">Cours associé</dt>
+                    <dd class="col-sm-9">
+                        <a href="{{ path('app_cours_show', {'id': chapitre.cours.id}) }}" 
+                           class="text-decoration-none">
+                            {{ chapitre.cours.title }}
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="card-footer bg-light py-3">
+            <a href="{{ path('app_cours_show', {'id': chapitre.cours.id}) }}" 
+               class="btn btn-outline-secondary d-inline-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Retour au cours
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

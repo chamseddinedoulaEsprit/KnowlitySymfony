@@ -1,0 +1,235 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Liste des étudiants - {{ evaluation.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-container {
+            background: linear-gradient(135deg, #0056b3 0%, #007bff 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0056b3;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #495057;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .student-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .student-table th {
+            background: #f8f9fa;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .student-table td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: #f1f1f1;
+        }
+
+        .student-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .student-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .status-corrige {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-en-cours {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn i {
+            font-size: 0.9em;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .page-title {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="page-title">{{ evaluation.title }}</h1>
+            <a href="{{ path('app_evaluation_showenseignant', {'id': evaluation.id}) }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Retour à l'évaluation
+            </a>
+        </div>
+
+        <div class="stats-container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Étudiants total</div>
+                        <div class="stat-number">{{ studentData|length }}</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Copies corrigées</div>
+                        <div class="stat-number">{{ correctedCopies }}/{{ studentData|length }}</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Moyenne de la classe</div>
+                        <div class="stat-number">{{ moyenne|number_format(2) }}/{{ scoreMaxTotal }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if studentData is empty %}
+            <div class="empty-state">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h3>Aucun étudiant n'a encore soumis de réponse.</h3>
+                <p>Il n'y a pas encore d'étudiants inscrits à cette évaluation.</p>
+            </div>
+        {% else %}
+            <div class="student-table">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Email</th>
+                            <th>Date de soumission</th>
+                            <th>Score</th>
+                            <th>État</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in studentData %}
+                            <tr>
+                                <td>{{ data.student.prenom }} {{ data.student.nom }}</td>
+                                <td>{{ data.student.email }}</td>
+                                <td>
+                                    {% if data.lastSubmitTime %}
+                                        {{ data.lastSubmitTime|date('d/m/Y H:i') }}
+                                    {% else %}
+                                        <span class="text-muted">Non soumis</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.correctedCount == data.submittedCount %}
+                                        {{ data.totalScore }}/{{ scoreMaxTotal }}
+                                    {% else %}
+                                        En cours de correction
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.correctedCount == data.submittedCount %}
+                                        <span class="status-badge status-corrige">Corrigé</span>
+                                    {% else %}
+                                        <span class="status-badge status-en-cours">En attente</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                   <a href="{{ path('app_evaluation_correct_student', {
+    'evaluationId': evaluation.id,
+    'studentId': data.student.id
+}) }}" class="action-btn btn btn-{% if data.correctedCount == data.submittedCount %}warning{% else %}primary{% endif %}">
+    {% if data.correctedCount == data.submittedCount %}
+        <i class="fas fa-edit"></i> Recorriger
+    {% else %}
+        <i class="fas fa-check"></i> Corriger
+    {% endif %}
+</a>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

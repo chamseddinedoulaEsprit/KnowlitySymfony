@@ -1,0 +1,302 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Our Events{% endblock %}
+
+
+    
+
+{% block stylesheets %}
+
+    {% if app.session.get('roles') is null %}
+        <script type="text/javascript">
+            window.location.href = "{{ path('app_login') }}";
+        </script>
+    {% endif %}
+    {% if app.session.get('deleted') ==1%}
+        <script type="text/javascript">
+            window.location.href = "{{ path('logout') }}";
+        </script>
+    {% endif %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.css">
+
+<link href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugins/bootstrap/bootstrap-slider.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugins/slick/slick.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugins/slick/slick-theme.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/plugins/jquery-nice-select/css/nice-select.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('assets/css/events.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<section class="hero-area bg-1 text-center overly">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-block">
+                    <h1>Look Book &amp; Events Near You</h1>
+                    <p>Join Our Community Closer By Participating In Our Events</p>
+                    <div class="short-popular-category-list text-center">
+                        <h2>Popular Categories</h2>
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><a href="#"><i class="fas fa-chalkboard-teacher"></i> Workshop</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="fas fa-laptop-code"></i> Hackathon</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="fas fa-futbol"></i> Sports</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="fas fa-handshake"></i> Networking</a></li>
+                            <li class="list-inline-item"><a href="#"><i class="fas fa-theater-masks"></i> Cultural</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Search Form -->
+                <div class="advance-search">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12 col-md-12 align-content-center">
+                                <form id="searchForm">
+                                    <div class="form-row">
+                                        <div class="form-group col-xl-4 col-lg-3 col-md-6">
+                                            <input type="text" class="form-control" id="searchQuery" placeholder="What are you looking for">
+                                        </div>
+                                        <div class="form-group col-lg-3 col-md-6">
+                                            <select class="w-100 form-control" id="searchCategory">
+                                                <option value="">Category</option>
+                                                <option value="Workshop">Workshop</option>
+                                                <option value="Hackathon">Hackathon</option>
+                                                <option value="Sports">Sports</option>
+                                                <option value="Networking">Networking</option>
+                                                <option value="Cultural">Cultural</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-3 col-md-6">
+                                            <input type="text" class="form-control" id="searchLocation" placeholder="Location">
+                                        </div>
+                                        <div class="form-group col-xl-2 col-lg-3 col-md-6 align-self-center">
+                                            <button type="button" class="btn btn-primary active w-100" id="searchButton">Search Now</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Search Form -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<br>
+<br>
+<br>
+
+<div class="text-center my-4">
+    <button class="btn btn-primary" id="showNormal">Recent Events</button>
+    <button class="btn btn-secondary" id="showRecommended">Recommended Events</button>
+</div>
+
+<section class="light">
+    <div class="container py-2">
+        <div class="h1 text-center text-dark" id="pageHeaderTitle">Our Events</div>
+
+        <div id="normalEvents">
+    <h5>Our Events</h5>
+    <div id="eventList">
+        {% for event in events %}
+        <article class="postcard light blue event-card"
+                data-title="{{ event.title|lower }}" 
+                data-category="{{ event.category }}"
+                data-location="{{ event.location|lower }}">
+            <a class="postcard__img_link" href="{{ path('app_events_show', {'id': event.id}) }}">
+                {% if event.image %}
+                    <img class="postcard__img" src="http://localhost/demo/src/main/resources/images/{{ event.image }}" alt="{{ event.title }}">
+                {% else %}
+                    <p>No image available</p>
+                {% endif %}
+            </a>
+            <div class="postcard__text t-dark">
+                <h1 class="postcard__title blue">
+                    <a href="{{ path('app_events_show', {'id': event.id}) }}">{{ event.title }}</a>
+                </h1>
+                <div class="postcard__subtitle small">
+                    <time datetime="{{ event.startDate|date('Y-m-d H:i:s') }}">
+                        <i class="fas fa-calendar-alt mr-2"></i>{{ event.startDate|date('D, M jS Y') }}
+                    </time>
+                </div>
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">{{ event.description }}
+                <ul class="postcard__tagbox">
+					<li class="tag__item"><i class="fas fa-tag mr-2"></i>{{ event.category }}</li>
+					<li class="tag__item"><i class="fas fa-money mr-2"></i>FREE</li>
+					<li class="tag__item play red">
+						<a href="{{ path('app_events_show', {'id': event.id}) }}"><i class="fas fa-link mr-2"></i>Reserve</a>
+					</li>
+				</ul>
+                </div>
+            </div>
+        </article>
+        {% else %}
+        <p>No events found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="recommendedEvents" style="display: none;">
+    <h5>Recommended Events</h5>
+    <div id="recommendedList">
+        {% for recommended in recommendation %}
+        <article class="postcard light blue event-card"
+                data-title="{{ recommended.title|lower }}" 
+                data-category="{{ recommended.category is iterable ? recommended.category|join(',')|lower : recommended.category|lower }}"
+                data-location="{{ recommended.location|lower }}">
+            <a class="postcard__img_link" href="{{ path('app_events_show', {'id': recommended.id}) }}">
+                {% if recommended.image %}
+                    <img class="postcard__img" src="http://localhost/demo/src/main/resources/images/{{ event.image }}" alt="{{ recommended.title }}">
+                {% else %}
+                    <p>No image available</p>
+                {% endif %}
+            </a>
+            <div class="postcard__text t-dark">
+                <h1 class="postcard__title blue">
+                    <a href="{{ path('app_events_show', {'id': recommended.id}) }}">{{ recommended.title }}</a>
+                </h1>
+                <div class="postcard__subtitle small">
+                    <time datetime="{{ recommended.startDate|date('Y-m-d H:i:s') }}">
+                        <i class="fas fa-calendar-alt mr-2"></i>{{ recommended.startDate|date('D, M jS Y') }}
+                    </time>
+                </div>
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">{{ recommended.description }}
+                <ul class="postcard__tagbox">
+					<li class="tag__item"><i class="fas fa-tag mr-2"></i>{{ recommended.category }}</li>
+					<li class="tag__item"><i class="fas fa-money mr-2"></i>FREE</li>
+					<li class="tag__item play red">
+						<a href="{{ path('app_events_show', {'id': recommended.id}) }}"><i class="fas fa-link mr-2"></i>Reserve</a>
+					</li>
+				</ul>
+                </div>
+                </div>
+            </div>
+        </article>
+        {% else %}
+        <p>No recommended events found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+    </div>
+
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM fully loaded and parsed"); // Check if the DOM is ready
+
+    const searchInput = document.getElementById("searchQuery");
+    const categorySelect = document.getElementById("searchCategory");
+    const locationInput = document.getElementById("searchLocation");
+    const searchButton = document.getElementById("searchButton");
+
+    console.log("Elements fetched:", { searchInput, categorySelect, locationInput, searchButton }); // Log elements
+
+    const eventCards = document.querySelectorAll(".event-card");
+    console.log("Event cards found:", eventCards.length); // Log the number of event cards
+
+    function filterEvents() {
+        console.log("filterEvents function called"); // Check if the function is called
+
+        const searchText = searchInput.value.toLowerCase().trim();
+        const selectedCategory = categorySelect.value.toLowerCase().trim();
+        const locationText = locationInput.value.toLowerCase().trim();
+
+        console.log("Filtering Events with:", { searchText, selectedCategory, locationText }); // Log search inputs
+
+        eventCards.forEach((card, index) => {
+            const title = card.getAttribute("data-title")?.toLowerCase() || "";
+            const categories = card.getAttribute("data-category")?.toLowerCase().split(",") || [];
+            const location = card.getAttribute("data-location")?.toLowerCase() || "";
+
+            console.log(`Checking event ${index + 1}:`, { title, categories, location }); // Log event details
+
+            const matchesTitle = searchText === "" || title.includes(searchText);
+            const matchesCategory = selectedCategory === "" || categories.includes(selectedCategory);
+            const matchesLocation = locationText === "" || location.includes(locationText);
+
+            if (matchesTitle && matchesCategory && matchesLocation) {
+                console.log(`Event ${index + 1} matches criteria`); // Log matching events
+                card.style.display = "block";
+            } else {
+                console.log(`Event ${index + 1} does not match criteria`); // Log non-matching events
+                card.style.display = "none";
+            }
+        });
+    }
+    
+
+    if (searchButton) {
+        searchButton.addEventListener("click", function (event) {
+            console.log("Search button clicked"); // Check if the button click is registered
+            event.preventDefault();
+            filterEvents();
+        });
+    } else {
+        console.error("Search button not found"); // Log if the button is missing
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", filterEvents);
+        console.log("Input event listener added to searchInput"); // Log input event listener
+    } else {
+        console.error("Search input not found"); // Log if the input is missing
+    }
+
+    if (categorySelect) {
+        categorySelect.addEventListener("change", filterEvents);
+        console.log("Change event listener added to categorySelect"); // Log change event listener
+    } else {
+        console.error("Category select not found"); // Log if the select is missing
+    }
+
+    if (locationInput) {
+        locationInput.addEventListener("input", filterEvents);
+        console.log("Input event listener added to locationInput"); // Log input event listener
+    } else {
+        console.error("Location input not found"); // Log if the input is missing
+    }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const normalEventsSection = document.getElementById("normalEvents");
+    const recommendedEventsSection = document.getElementById("recommendedEvents");
+    const showNormalBtn = document.getElementById("showNormal");
+    const showRecommendedBtn = document.getElementById("showRecommended");
+
+    showNormalBtn.addEventListener("click", function () {
+        normalEventsSection.style.display = "block";
+        recommendedEventsSection.style.display = "none";
+        showNormalBtn.classList.add("btn-primary");
+        showNormalBtn.classList.remove("btn-secondary");
+        showRecommendedBtn.classList.add("btn-secondary");
+        showRecommendedBtn.classList.remove("btn-primary");
+    });
+
+    showRecommendedBtn.addEventListener("click", function () {
+        normalEventsSection.style.display = "none";
+        recommendedEventsSection.style.display = "block";
+        showRecommendedBtn.classList.add("btn-primary");
+        showRecommendedBtn.classList.remove("btn-secondary");
+        showNormalBtn.classList.add("btn-secondary");
+        showNormalBtn.classList.remove("btn-primary");
+    });
+});
+</script>
+
+{% endblock %}

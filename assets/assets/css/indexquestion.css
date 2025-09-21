@@ -1,0 +1,112 @@
+.container1 {
+    position: relative;
+max-width: 1000px;
+margin-top: 80px;
+right: -137px;
+
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.btn {
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 10px 25px;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+th {
+    background-color: #343a40;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+tbody tr:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-end {
+    text-align: right;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #f1f1f1;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #ddd;
+}
+
+.table-bordered {
+    border: 2px solid #dee2e6;
+}
+
+.tooltip-inner {
+    background-color: #6c757d;
+    color: white;
+    font-size: 14px;
+}
+
+.tooltip-arrow {
+    border-top-color: #6c757d;
+}

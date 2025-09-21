@@ -1,0 +1,9 @@
+# config/packages/jms_translation.yaml
+
+jms_translation:
+    locales: ['en', 'fr']
+    source_language: 'fr'
+    configs:
+        app:
+            dirs: ["%kernel.project_dir%/src"]
+            output_dir: "%kernel.project_dir%/translations"

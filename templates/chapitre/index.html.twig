@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chapitre index{% endblock %}
+
+{% block body %}
+<div class="col-lg-12">
+          <div class="section-heading">
+            <h6>Chapitre index</h6>
+            <h4>Provided <em>Services</em></h4>
+          </div>
+        </div>
+    
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>ChapOrder</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for chapitre in chapitres %}
+            <tr>
+                <td>{{ chapitre.id }}</td>
+                <td>{{ chapitre.title }}</td>
+                <td>{{ chapitre.chapOrder }}</td>
+                <td>
+                    <a href="{{ path('app_chapitre_show', {'id': chapitre.id}) }}">show</a>
+                    <a href="{{ path('app_chapitre_edit', {'id': chapitre.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chapitre_new') }}">Create new</a>
+{% endblock %}

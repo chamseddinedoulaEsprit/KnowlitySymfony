@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background-color: #007bff; color: white; padding: 10px; text-align: center; }
+        .section { margin-bottom: 20px; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .table th, .table td { border: 1px solid black; padding: 8px; text-align: left; }
+        .table th { background-color: #007bff; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Quiz Results</h1>
+</div>
+
+<div class="section">
+    <strong>Submission Date:</strong> {{ user_quiz_selection.selectionDate|date('F j, Y \\a\\t g:i A') }}
+</div>
+
+<div class="section">
+    <strong>Score:</strong> {{ user_quiz_selection.score|default('N/A') }}%
+</div>
+
+<div class="section">
+    <strong>Correct Answers:</strong> {{ user_quiz_selection.correctResponses|default('N/A') }} / {{ user_quiz_selection.userQuizResults|length }}
+</div>
+
+<h3>Detailed Responses</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct Answer</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in user_quiz_selection.userQuizResults %}
+            <tr>
+                <td>{{ result.quizQuestion.texte }}</td>
+                <td>{{ result.response }}</td>
+                <td>
+                    {% for answer in result.quizQuestion.reponses %}
+    {% if answer.estCorrecte %}
+        <span>{{ answer.texte }}</span>
+    {% endif %}
+{% endfor %}
+
+                </td>
+                <td>
+                    {% set isCorrect = false %}
+                   {% for answer in result.quizQuestion.reponses %}
+    {% if answer.estCorrecte and answer.texte == result.response %}
+        {% set isCorrect = true %}
+    {% endif %}
+{% endfor %}
+
+                    {% if isCorrect %}
+                        ✅ Correct
+                    {% else %}
+                        ❌ Incorrect
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No responses recorded</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
+

@@ -1,0 +1,402 @@
+{% extends 'base3.html.twig' %}
+
+{% block title %}Statistiques de l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .evaluation-header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .evaluation-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .evaluation-meta {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .students-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .sort-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .sort-btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sort-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .sort-btn.active {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .students-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .students-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .students-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .score-bar {
+            height: 0.5rem;
+            background: #e2e8f0;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .score-progress {
+            height: 100%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-radius: 1rem;
+            transition: width 0.3s ease;
+        }
+
+        .distribution-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .distribution-item {
+            text-align: center;
+        }
+
+        .distribution-bar {
+            height: 150px;
+            background: #f1f5f9;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .distribution-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-radius: 0.5rem;
+            transition: height 0.3s ease;
+        }
+
+        .distribution-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .distribution-value {
+            color: #0f172a;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 2rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: #0ea5e9;
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .distribution-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .sort-buttons {
+                flex-wrap: wrap;
+            }
+
+            .students-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="stats-container">
+    <header class="evaluation-header">
+        <a href="{{ path('app_evaluation_showenseignant', {'id': evaluation.id}) }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Retour à l'évaluation
+        </a>
+        <h1>{{ evaluation.title }}</h1>
+        <div class="evaluation-meta">
+            <span>Échéance : {{ evaluation.deadline|date('d/m/Y H:i') }}</span>
+        </div>
+    </header>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Participants</div>
+            <div class="stat-value">{{ totalStudents }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Score Moyen</div>
+            <div class="stat-value">{{ averageScore|number_format(2) }}/{{ scoreMaxTotal }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Taux de Réussite</div>
+            <div class="stat-value">{{ passRate|number_format(1) }}%</div>
+        </div>
+    </div>
+
+    <section class="students-section">
+        <h2 class="section-title">Classement des Étudiants</h2>
+        
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Rechercher un étudiant...">
+            <div class="sort-buttons">
+                <button class="sort-btn active" data-sort="score">Score ↑</button>
+                <button class="sort-btn" data-sort="score-desc">Score ↓</button>
+                <button class="sort-btn" data-sort="name">A-Z</button>
+                <button class="sort-btn" data-sort="name-desc">Z-A</button>
+            </div>
+        </div>
+
+        <table class="students-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Score</th>
+                    <th>Progression</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in studentRankings %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ student.nom }} {{ student.prenom }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.totalScore }}/{{ scoreMaxTotal }}</td>
+                    <td>
+                        <div class="score-bar">
+                            <div class="score-progress" style="width: {{ (student.totalScore / scoreMaxTotal * 100)|number_format(0) }}%"></div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="distribution-section">
+        <h2 class="section-title">Distribution des Scores</h2>
+        <div class="distribution-grid">
+            {% for range, count in scoreRanges %}
+            <div class="distribution-item">
+                <div class="distribution-bar">
+                    <div class="distribution-fill" style="height: {{ (count / totalStudents * 100)|number_format(0) }}%"></div>
+                </div>
+                <div class="distribution-label">{{ range }}</div>
+                <div class="distribution-value">{{ count }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Recherche d'étudiants
+    const searchInput = document.querySelector('.search-input');
+    const tableRows = document.querySelectorAll('.students-table tbody tr');
+
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        tableRows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+
+    // Tri des étudiants
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    
+    sortButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Mise à jour des classes active
+            sortButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const sortType = this.dataset.sort;
+            const tbody = document.querySelector('.students-table tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                switch(sortType) {
+                    case 'score':
+                        aVal = parseFloat(a.cells[3].textContent);
+                        bVal = parseFloat(b.cells[3].textContent);
+                        return bVal - aVal;
+                    case 'score-desc':
+                        aVal = parseFloat(a.cells[3].textContent);
+                        bVal = parseFloat(b.cells[3].textContent);
+                        return aVal - bVal;
+                    case 'name':
+                        aVal = a.cells[1].textContent;
+                        bVal = b.cells[1].textContent;
+                        return aVal.localeCompare(bVal);
+                    case 'name-desc':
+                        aVal = a.cells[1].textContent;
+                        bVal = b.cells[1].textContent;
+                        return bVal.localeCompare(aVal);
+                }
+            });
+
+            // Réinsertion des lignes triées
+            rows.forEach(row => tbody.appendChild(row));
+        });
+    });
+});
+</script>
+{% endblock %}

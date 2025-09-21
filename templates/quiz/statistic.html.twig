@@ -1,0 +1,20 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}EventRegistration{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ asset('assets/css/event_chart.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div id="chart-container"></div>
+{% endblock %}
+
+{% block script %}
+  <script>
+        var quizStats = {{ quizStats|json_encode|raw }};
+    </script>
+<script src="https://echarts.apache.org/en/js/vendors/echarts/dist/echarts.min.js"></script>
+    <script src="{{ asset('assets/js/quiz_chart.js') }}"></script>
+
+{% endblock %}

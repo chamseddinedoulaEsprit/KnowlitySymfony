@@ -1,0 +1,93 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Détails de la matière{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h4 mb-0"><i class="fas fa-book-open mr-2"></i>{{ matiere.titre }}</h2>
+            </div>
+            
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">ID</dt>
+                    <dd class="col-sm-9">{{ matiere.id }}</dd>
+
+                    <dt class="col-sm-3">Titre</dt>
+                    <dd class="col-sm-9">{{ matiere.titre }}</dd>
+
+                    <dt class="col-sm-3">Catégorie</dt>
+                    <dd class="col-sm-9">
+                        {% if matiere.categorie %}
+                            <a href="{{ path('app_categorie_show', {'id': matiere.categorie.id}) }}" 
+                               class="badge badge-info">
+                                {{ matiere.categorie.name }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">Aucune catégorie associée</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">Date de création</dt>
+                    <dd class="col-sm-9">{{ matiere.createdAt|date('d/m/Y H:i') }}</dd>
+
+                    <dt class="col-sm-3">Dernière modification</dt>
+                    <dd class="col-sm-9">{{ matiere.updatedAt|date('d/m/Y H:i') }}</dd>
+
+                    <dt class="col-sm-3">Prérequis</dt>
+                    <dd class="col-sm-9">
+                        {% for prerequi in matiere.prerequis|split(',') %}
+                            <span class="badge badge-secondary">{{ prerequi|trim }}</span>
+                        {% endfor %}
+                    </dd>
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">{{ matiere.description|nl2br }}</dd>
+
+                    <dt class="col-sm-3">Couleur du thème</dt>
+                    <dd class="col-sm-9">
+                        <div class="d-flex align-items-center">
+                            <div class="color-swatch mr-2" 
+                                 style="background-color: {{ matiere.getCouleurTheme() }}; width: 30px; height: 30px; border-radius: 4px;">
+                            </div>
+                            {{ matiere.getCouleurTheme() }}
+                        </div>
+                    </dd>
+
+                    <dt class="col-sm-3">Cours associés</dt>
+                    <dd class="col-sm-9">
+                        {% if matiere.cours|length > 0 %}
+                            <ul class="list-unstyled">
+                                {% for cour in matiere.cours %}
+                                    <li>
+                                        <a href="{{ path('app_cours_show', {'id': cour.id}) }}" 
+                                           class="text-decoration-none">
+                                            <i class="fas fa-file-alt mr-1"></i>{{ cour.title }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span class="text-muted">Aucun cours associé</span>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ path('app_matiere_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i>Retour à la liste
+                </a>
+                
+                <div class="btn-group">
+                    <a href="{{ path('app_matiere_edit', {'id': matiere.id}) }}" 
+                       class="btn btn-primary">
+                        <i class="fas fa-edit mr-1"></i>Modifier
+                    </a>
+                    {{ include('matiere/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

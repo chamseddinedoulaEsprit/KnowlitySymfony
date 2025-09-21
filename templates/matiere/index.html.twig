@@ -1,0 +1,54 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Liste des Matières{% endblock %}
+
+{% block body %}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Liste des Matières</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Titre</th>
+                        <th scope="col">Date de création</th>
+                        <th scope="col">Date de mise à jour</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for matiere in matieres %}
+                        <tr>
+                            <th scope="row">{{ matiere.id }}</th>
+                            <td>{{ matiere.titre }}</td>
+                            <td>{{ matiere.createdAt ? matiere.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ matiere.updatedAt ? matiere.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>
+                                <a href="{{ path('app_matiere_show', {'id': matiere.id}) }}" class="btn btn-info btn-sm">
+                                    Voir
+                                </a>
+                                <a href="{{ path('app_matiere_edit', {'id': matiere.id}) }}" class="btn btn-warning btn-sm">
+                                     Modifier
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Aucune matière trouvée</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+
+        <div class="card-footer">
+            <a href="{{ path('app_matiere_new', {'id': 1}) }}" class="btn btn-success">
+                 Créer une nouvelle matière
+            </a>
+        </div>
+    </div>
+{% endblock %}

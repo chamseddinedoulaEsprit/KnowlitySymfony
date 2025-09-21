@@ -1,0 +1,60 @@
+<!-- Bouton de suppression -->
+<button class="btn btn-danger" onclick="showDeleteConfirmation({{ evaluation.id }})">
+    <i class="fas fa-trash"></i> Supprimer
+</button>
+
+<!-- Modal de confirmation -->
+<div id="delete-modal-{{ evaluation.id }}" class="delete-modal" style="display: none;">
+    <div class="modal-content">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Confirmation de suppression</h4>
+            <p>Êtes-vous sûr de vouloir supprimer cette évaluation ?</p>
+            <p class="mb-0"><small>Cette action est irréversible.</small></p>
+        </div>
+        <form method="post" action="{{ path('app_evaluation_deleteenseignant', {'id': evaluation.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evaluation.id) }}">
+            <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+            <button type="button" class="btn btn-secondary" onclick="hideDeleteConfirmation({{ evaluation.id }})">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- CSS pour le modal -->
+<style>
+    .delete-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .alert {
+        margin-bottom: 1rem;
+    }
+    .gap-2 {
+        gap: 0.5rem;
+    }
+</style>
+
+<script>
+function showDeleteConfirmation(id) {
+    document.getElementById('delete-modal-' + id).style.display = 'flex';
+}
+
+function hideDeleteConfirmation(id) {
+    document.getElementById('delete-modal-' + id).style.display = 'none';
+}
+</script>

@@ -1,0 +1,216 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .blog-header {
+            position: relative;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 100px 0 50px;
+            margin-bottom: 50px;
+        }
+
+        .blog-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            color: #95a5a6;
+            font-size: 1rem;
+        }
+
+        .creator-info {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .creator-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .blog-image-container {
+            position: relative;
+            margin: -100px auto 40px;
+            max-width: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+
+        .blog-content p {
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .action-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: scale(1.02);
+        }
+
+        .action-button.edit {
+            background: #ffc107;
+            color: white;
+        }
+
+        .action-button.delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-button.back {
+            background: #6c757d;
+            color: white;
+        }
+
+        .metadata {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+
+        .metadata-item i {
+            width: 25px;
+            margin-right: 10px;
+            color: #007bff;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- En-tête du blog -->
+    <div class="blog-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center">
+                    <h1 class="blog-title animate__animated animate__fadeInDown">
+                        {{ blog.title }}
+                    </h1>
+                    <div class="blog-meta justify-content-center animate__animated animate__fadeInUp">
+                        <div class="creator-info">
+                            {% if blog.userImage %}
+                                <img src="{{ asset(blog.userImage) }}" class="creator-image" alt="Photo de {{ blog.creatorName }}">
+                            {% else %}
+                                <div class="creator-image bg-primary d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                            {% endif %}
+                            <div class="creator-details">
+                                <div class="fw-bold text-dark">{{ blog.creatorName }}</div>
+                                <small>
+                                    <i class="far fa-calendar-alt me-2"></i>
+                                    {{ blog.createdAt|date('d/m/Y') }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Image du blog -->
+        {% if blog.blogImage %}
+            <div class="blog-image-container animate__animated animate__fadeInUp">
+                <img src="{{asset('uploads/images/' ~ blog.blogImage)}}" class="blog-image" alt="Image principale du blog">
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <!-- Métadonnées -->
+                <div class="metadata animate__animated animate__fadeInUp">
+                    <div class="metadata-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Créé le {{ blog.createdAt|date('d/m/Y à H:i') }}</span>
+                    </div>
+                    {% if blog.updatedAt %}
+                        <div class="metadata-item">
+                            <i class="fas fa-edit"></i>
+                            <span>Dernière modification le {{ blog.updatedAt|date('d/m/Y à H:i') }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Contenu du blog -->
+                <div class="blog-content animate__animated animate__fadeInUp">
+                    {{ blog.content|nl2br }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action flottants -->
+    <div class="action-buttons animate__animated animate__fadeInRight">
+        <a href="{{ path('app_blog_edit', {'id': blog.id}) }}" class="action-button edit" title="Modifier">
+            <i class="fas fa-edit"></i>
+        </a>
+        <form method="post" action="{{ path('app_blog_delete', {'id': blog.id}) }}" 
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce blog ?');"
+              style="display: inline-block;">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ blog.id) }}">
+            <button class="action-button delete border-0" title="Supprimer">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </form>
+        <a href="{{ path('app_blog_index') }}" class="action-button back" title="Retour à la liste">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+{% endblock %}

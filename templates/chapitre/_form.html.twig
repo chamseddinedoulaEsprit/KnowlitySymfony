@@ -1,0 +1,106 @@
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Chapitre</h3>
+    </div>
+    
+    {{ form_start(form) }}
+    <div class="card-body">
+        <!-- Titre -->
+        <div class="form-group">
+            {{ form_label(form.title, 'Titre') }}
+            {{ form_widget(form.title, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Entrez le titre du chapitre'
+                }
+            }) }}
+            {{ form_errors(form.title) }} {# Afficher les erreurs pour le titre #}
+        </div>
+
+        <!-- Ordre du chapitre -->
+        <div class="form-group">
+            {{ form_label(form.chapOrder, 'Ordre du chapitre') }}
+            {{ form_widget(form.chapOrder, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Entrez l\'ordre du chapitre'
+                }
+            }) }}
+            {{ form_errors(form.chapOrder) }} {# Afficher les erreurs pour l'ordre #}
+        </div>
+
+        <!-- Durée estimée -->
+        <div class="form-group">
+            {{ form_label(form.duree_estimee, 'Durée estimée en heure') }} {# Correction du label #}
+            {{ form_widget(form.duree_estimee, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Entrez la durée du chapitre (en minutes)'
+                }
+            }) }}
+            {{ form_errors(form.duree_estimee) }} {# Afficher les erreurs pour la durée #}
+        </div>
+
+        <!-- Fichier PDF -->
+        <div class="form-group">
+            {{ form_label(form.brochure, 'Fichier PDF') }} {# Correction du label #}
+            {{ form_widget(form.brochure, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Sélectionnez un fichier PDF'
+                }
+            }) }}
+            {{ form_errors(form.brochure) }} {# Afficher les erreurs pour le fichier #}
+            <small class="form-text text-muted">Formats acceptés : PDF (max 10Mo)</small>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <button type="submit" name="save" class="btn btn-primary">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+        <button type="submit" name="add_another" class="btn btn-success ml-2">
+            {{ button_label|default('+ chapitre') }}
+        </button>
+        <button type="submit" name="add_another_evaluation" class="btn btn-success ml-2">
+            {{ button_label|default('+ evaluation') }}
+        </button>
+    </div>
+    {{ form_end(form) }}
+</div>
+
+<style>
+    .form-control {
+        margin-bottom: 1rem;
+    }
+    
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+    
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    
+    .ml-2 {
+        margin-left: 0.5rem;
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+</style>

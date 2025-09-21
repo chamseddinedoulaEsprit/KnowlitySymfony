@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events{% endblock %}
+{% block stylesheets %}
+
+    {% if app.session.get('roles') is null %}
+        <script type="text/javascript">
+            window.location.href = "{{ path('app_login') }}";
+        </script>
+    {% endif %}
+    {% if app.session.get('deleted') ==1%}
+        <script type="text/javascript">
+            window.location.href = "{{ path('logout') }}";
+        </script>
+    {% endif %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="{{ asset('assets/css/show_event.css') }}">
+{% endblock %}
+{% block body %}
+
+<section class="banner bg-banner-one overlay">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<!-- Content Block -->
+				<div class="block">
+					<!-- Coundown Timer -->
+					<div class="timer"></div>
+					<h1>{{ event.title }}</h1>
+					<h6>{{ event.startDate ? event.startDate|date('Y-m-d') : '' }}  {{ event.location }}</h6>
+					<!-- Action Button -->
+					<a href="{{ path('app_event_registration_new', {'id': event.id}) }}" class="btn btn-white-md">Reseve now</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section about">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-6 align-self-center">
+				<div class="image-block bg-about">
+					<img class="img-fluid" src="http://localhost/demo/src/main/resources/images/{{ event.organizer.image }}" alt="">
+				</div>
+			</div>
+			<div class="col-lg-8 col-md-6 align-self-center">
+				<div class="content-block">
+					<h2>About The <span class="alternate">Event</span></h2>
+					<div class="description-one">
+						<p>
+                            {{ event.description }}
+						</p>
+					</div>
+					<ul class="list-inline">
+						<li class="list-inline-item">
+							<a href="{{ path('app_event_registration_new', {'id': event.id}) }}" class="btn btn-main-md">Reserve</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<a class="postcard__img_link" href="{{ path('app_events_show', {'id': event.id}) }}">
+    {% if event.image %}
+        <img class="postcard__img" src="http://localhost/demo/src/main/resources/images/{{ event.image }}" alt="{{ event.title }}">
+    {% else %}
+        <p>No image available</p>
+    {% endif %}
+</a>
+
+<section class="registration">
+	<div class="container-fuild p-0">
+		<div class="row">
+			<div class="col-lg-6 col-md-12 p-0">
+				<div class="service-block bg-service overlay-primary text-center">
+					<div class="row no-gutters">
+						<div class="col-6">
+							<!-- Service item -->
+							<div class="service-item">
+								<i class="fa fa-money"></i>
+								<h5>Free</h5>
+							</div>
+						</div>
+						<div class="col-6">
+							<!-- Service item -->
+							<div class="service-item">
+								<i class="fa fa-flag"></i>
+								<h5>{{ event.maxParticipants }} + Seats</h5>
+							</div>
+						</div>
+						<div class="col-6">
+							<!-- Service item -->
+							<div class="service-item">
+								<i class="fa fa-ticket"></i>
+								<h5>{{ event.seatsAvailable }} tickets</h5>
+							</div>
+						</div>
+						<div class="col-6">
+							<!-- Service item -->
+							{% set duration = event.startDate and event.endDate ? event.startDate.diff(event.endDate).days : 0 %}
+                            <div class="service-item">
+                                <i class="fa fa-calendar"></i>
+                                <h5>{{ duration > 0 ? duration ~ ' days event' : '1 day event' }}</h5>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6 col-md-12 p-0">
+				<div class="registration-block bg-registration overlay-dark">
+					<div class="block">
+						<div class="map">
+						<div class="address-block">
+							<h4>Docklands Convention</h4>
+							<ul class="address-list p-0 m-0">
+							<li><i class="fa fa-home"></i><span>{{ event.location }}</span></li>
+							<li><i class="fa fa-phone"></i><span>[+216] {{ event.organizer.numTelephone }}</span></li>
+							</ul>
+							<a href="#" class="btn btn-white-md">Get Direction</a>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<section class="map">
+  <!-- Leaflet Map -->
+  <div id="map" data-latitude="{{ event.latitude }}" data-longitude="{{ event.longitude }}"></div>
+</section>
+
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+<!-- jQuery (required) and Nice Select JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js"></script>
+
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/bootstrap-slider.js') }}"></script>
+    <script src="{{ asset('assets/plugins/tether/js/tether.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/raty/jquery.raty-fa.js') }}"></script>
+    <script src="{{ asset('assets/plugins/slick/slick.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-nice-select/js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('assets/js/event.js') }}"></script>
+    <script src="{{ asset('assets/plugins/syotimer/jquery.syotimer.min.js') }}"></script>
+	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+	<script src="{{ asset('assets/js/leaflet.js') }}"></script>	
+    <script>
+    $(document).ready(function() {
+        $('select').niceSelect();
+    });</script>
+<script>
+    var eventStartDate = new Date("{{ event.startDate|date('Y-m-d H:i') }}");
+
+    $('.timer').syotimer({
+        year: eventStartDate.getFullYear(),
+        month: eventStartDate.getMonth() + 1, // JS months are 0-based
+        day: eventStartDate.getDate(),
+        hour: eventStartDate.getHours(),
+        minute: eventStartDate.getMinutes()
+    });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,247 @@
+{# templates/evaluation/answer.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Répondre à l'évaluation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .main-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .deadline-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .question-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .question-header {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .question-number {
+            background: #0d6efd;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+        }
+        .points-badge {
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .question-content {
+            padding: 2rem;
+        }
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #495057;
+            margin-bottom: 1.5rem;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        .answer-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+        }
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            border: none;
+            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(13, 110, 253, 0.3);
+        }
+        .alert {
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .pagination {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        .pagination .page-link {
+            border-radius: 10px;
+            margin: 0 0.2rem;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            color: #0d6efd;
+            transform: translateY(-1px);
+        }
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+        }
+        .pagination-info {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .question-card {
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-submit {
+            margin-top: 1rem;
+        }
+        .navigation {
+            margin-top: 2rem;
+        }
+        .math-block {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="main-header">
+            <h1>{{ evaluation.title }}</h1>
+            <div class="deadline-badge">
+                <i class="fas fa-clock"></i> Date limite : {{ evaluation.deadline|date('d/m/Y H:i') }}
+            </div>
+        </div>
+
+        {% for flashMessage in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+
+        {% for flashMessage in app.flashes('warning') %}
+            <div class="alert alert-warning">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+
+        <form method="post" action="{{ path('etudiant_evaluation_answer', {'id': evaluation.id, 'page': pagination.currentPageNumber}) }}">
+            {% for question in pagination %}
+                <div class="question-container">
+                    <div class="question-header">
+                        <span class="question-number">Question {{ loop.index }}</span>
+                        <span class="points-badge">{{ question.point }} points</span>
+                    </div>
+                    <div class="question-content">
+                        <div class="question-text">{{ question.enonce }}</div>
+                        
+                        {% if question.codeSnippet %}
+                            <div class="code-block">
+                                <pre><code class="{{ question.programmingLanguage|default('plaintext') }}">{{ question.codeSnippet }}</code></pre>
+                            </div>
+                        {% endif %}
+
+                        {% if question.hasMathFormula and question.mathFormula %}
+                            <div class="math-block">
+                                {{ question.mathFormula }}
+                            </div>
+                        {% endif %}
+
+                        <div class="answer-box">
+                            <label for="reponse_{{ question.id }}" class="form-label">Votre réponse :</label>
+                            <textarea 
+                                class="form-control" 
+                                id="reponse_{{ question.id }}" 
+                                name="reponses[{{ question.id }}]" 
+                                rows="3"
+                                required>{{ app.request.request.get('reponses')[question.id]|default('') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="navigation">
+                <div class="pagination-info">
+                    Page {{ pagination.currentPageNumber }} sur {{ pagination.pageCount }}
+                </div>
+
+                {% if pagination.pageCount > 0 %}
+                    <div class="pagination">
+                        {% if pagination.currentPageNumber > 1 %}
+                            <a href="{{ path('etudiant_evaluation_answer', {'id': evaluation.id, 'page': pagination.currentPageNumber - 1}) }}" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-chevron-left"></i> Page précédente
+                            </a>
+                        {% endif %}
+
+                        {% if pagination.currentPageNumber == pagination.pageCount %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Soumettre l'évaluation
+                            </button>
+                        {% elseif pagination.currentPageNumber < pagination.pageCount %}
+                            <a href="{{ path('etudiant_evaluation_answer', {'id': evaluation.id, 'page': pagination.currentPageNumber + 1}) }}" class="btn btn-primary">
+                                Page suivante <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

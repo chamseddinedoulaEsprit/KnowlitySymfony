@@ -1,0 +1,7 @@
+// assets/styles/joyride.scss
+.joyride-tooltip {
+    font-family: 'Votre police';
+    button {
+      @apply bg-blue-500 text-white px-4 py-2 rounded; // Exemple avec Tailwind
+    }
+  }
