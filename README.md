@@ -2,7 +2,7 @@
 
 ## Description
 
-Knowlity est une plateforme éducative développée avec **JavaFX** pour une interface utilisateur immersive, centrée sur l’apprentissage interactif via des quiz, cours, blogs, et événements, avec des fonctionnalités avancées d’IA et de sécurité.
+Knowlity est une plateforme éducative développée avec **Symfony** pour une interface utilisateur immersive, centrée sur l’apprentissage interactif via des quiz, cours, blogs, et événements, avec des fonctionnalités avancées d’IA et de sécurité.
 
 - **Objectif** : Offrir une solution complète pour l’apprentissage en ligne, avec des outils pour les étudiants, enseignants, et administrateurs, en intégrant des technologies modernes comme l’IA et des interfaces créatives.
 - **Problème qu’il résout** : Faciliter la création et la gestion de contenu éducatif, améliorer l’engagement des étudiants grâce à des quiz interactifs et des événements, et assurer une expérience utilisateur sécurisée et intuitive.
